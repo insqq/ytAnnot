@@ -63,7 +63,6 @@
             this.cbAnnotationName = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.pbLoading = new System.Windows.Forms.PictureBox();
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.colChecked = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colUrl = new System.Windows.Forms.DataGridViewLinkColumn();
@@ -81,6 +80,7 @@
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.lblLoginingStatus = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -88,7 +88,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picForResize)).BeginInit();
             this.pAnnotationSettings.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.tcMain.SuspendLayout();
             this.SuspendLayout();
@@ -474,7 +473,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.pbLoading);
+            this.tabPage1.Controls.Add(this.lblLoginingStatus);
             this.tabPage1.Controls.Add(this.dgvMain);
             this.tabPage1.Controls.Add(this.btnClearCache);
             this.tabPage1.Controls.Add(this.lblStatus);
@@ -491,14 +490,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Account";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // pbLoading
-            // 
-            this.pbLoading.Location = new System.Drawing.Point(493, 6);
-            this.pbLoading.Name = "pbLoading";
-            this.pbLoading.Size = new System.Drawing.Size(50, 50);
-            this.pbLoading.TabIndex = 17;
-            this.pbLoading.TabStop = false;
             // 
             // dgvMain
             // 
@@ -659,12 +650,22 @@
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // lblLoginingStatus
+            // 
+            this.lblLoginingStatus.AutoSize = true;
+            this.lblLoginingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblLoginingStatus.Location = new System.Drawing.Point(469, 11);
+            this.lblLoginingStatus.Name = "lblLoginingStatus";
+            this.lblLoginingStatus.Size = new System.Drawing.Size(0, 17);
+            this.lblLoginingStatus.TabIndex = 17;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1064, 595);
             this.Controls.Add(this.tcMain);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Main";
             this.Text = "ytAnnotations";
             this.tabPage2.ResumeLayout(false);
@@ -678,7 +679,6 @@
             this.pAnnotationSettings.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
             this.tcMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -737,9 +737,9 @@
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.TextBox tbPw;
         private System.Windows.Forms.TabControl tcMain;
-        private System.Windows.Forms.PictureBox pbLoading;
         private System.Windows.Forms.Label lblStatusBar;
         private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label lblLoginingStatus;
 
 
 

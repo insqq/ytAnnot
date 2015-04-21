@@ -22,12 +22,9 @@ namespace YouTubeAnnotations
     {
         XDocument doc;
         string developerKey = "AI39si7b0mdxvmauCnJDjsxsyiBYpWstXFC38n9qbr-7nGoEC5zQXaiDdVzuH0qmhYriNJ64FYsTQCOkXFUBYGKVF6AIAhZ9kw";
-        string test = "https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=357960218741-elgp2dlo51001lqk6fu3riuq7pib97d2.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A56658%2Fauthorize%2F&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube";
         string youtubeLoginUrl = "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Fnext%3D%252F%26action_handle_signin%3Dtrue%26feature%3Dsign_in_button%26hl%3Dru%26app%3Ddesktop&passive=true&uilel=3&hl=ru&service=youtube";
-        string dt = "<document>\n  <requestHeader video_id=\"A7hPnaHEyBk\"/>\n  <authenticationHeader video_id=\"A7hPnaHEyBk\" auth_token=\"BDtvEBQSsABx02Q2aofVN1zJhtZ8MTQyNzM4NjUzN0AxNDI3MzY0OTM3\"/>\n  <updatedItems>\n    <annotation author=\"\" id=\"annotation_3705455257\" type=\"text\" style=\"anchored\">\n      <appearance fgColor=\"16777215\" bgColor=\"13319742\" bgAlpha=\"0.6\" highlightFontColor=\"16777215\" textSize=\"4.814266666666667\" effects=\"bevel dropshadow textdropshadow\"/>\n      <segment>\n        <movingRegion type=\"anchored\" pattern=\"fixed\">\n          <anchoredRegion t=\"0:05.400\" d=\"0\" x=\"3.125\" y=\"18.889\" w=\"73.584\" h=\"40.770\" sx=\"17.708\" sy=\"61.659\"/>\n          <anchoredRegion t=\"0:30.400\" d=\"0\" x=\"3.125\" y=\"18.889\" w=\"73.584\" h=\"40.770\" sx=\"17.708\" sy=\"61.659\"/>\n        </movingRegion>\n      </segment>\n      <TEXT>qwerty</TEXT>\n      <action type=\"openUrl\" trigger=\"click\">\n        <url value=\"http://www.youtube.com/qwerty\" target=\"new\"/>\n      </action>\n    </annotation>\n  </updatedItems>\n  <deletedItems>\n    <deletedItem id=\"annotation_1052998829\" author=\"\"/>\n  </deletedItems>\n</document>";
         WebBrowser wb = new WebBrowser();
-        bool mouseResizeClicked = false;
-        bool mouseReplaceClicked = false;
+
 
         public Main()
         {
@@ -51,33 +48,46 @@ namespace YouTubeAnnotations
 
             // check user is logined, configure webbrowser
             wb.ScriptErrorsSuppressed = true;
-            btnLogout.PerformClick();
-            setLogouted();
-            //if (logined())
-            //{
-            //    string channelName = Regex.Match(wb.DocumentText, "<div class=\"yt-masthead-picker-name\" dir=\"ltr\">(.*?)</div>").Groups[1].Value;
-            //    lblStatus.Text = "channel: " + channelName;
-            //    setVideoInformation(getUserName());
-            //    setLogined();
-            //}
-            //else
-            //    setLogouted();
+            btnLogout_Click((object)wb, new EventArgs());
             wb.Dock = DockStyle.Fill;
             tabPage3.Controls.Add(wb);
         }
 
-        bool TemplateFileExist()
+        #region Page One
+
+        private void btnClearCache_Click(object sender, EventArgs e)
         {
-            string fname = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(s =>
+            Process.Start("cmd.exe", "/C RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 255");
+            setLogouted();
+        }
+
+        private void dgvMain_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
             {
-                string tmp = "";
-                string[] tmpArr = s.Split('\\');
-                tmp = tmpArr.Where(s1 => s1 == "Templates.xml").SingleOrDefault();
-                if (tmp == "Templates.xml") return true;
-                return false;
+                if ((dgvMain.Rows[0].Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "False")
+                {
+                    foreach (DataGridViewRow row in dgvMain.Rows)
+                    {
+                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = true;
+                    }
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in dgvMain.Rows)
+                    {
+                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = false;
+                    }
+                }
             }
-                ).SingleOrDefault();
-            return !(fname == null);
+        }
+
+        private void dgvMain_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 1)
+            {
+                Process.Start(dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+            }
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
@@ -92,6 +102,7 @@ namespace YouTubeAnnotations
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            lblLoginingStatus.Text = "loading";
             // go to login page
             wb.Navigate(youtubeLoginUrl);
             while (wb.ReadyState != WebBrowserReadyState.Complete)
@@ -133,6 +144,7 @@ namespace YouTubeAnnotations
             {
                 setLogouted();
                 lblStatus.Text = "Incorrect email or password\n or try to clear your cache";
+                lblLoginingStatus.Text = "";
                 return;
             }
             lblStatus.Text = "channel: " + channelName;
@@ -140,6 +152,53 @@ namespace YouTubeAnnotations
 
             Thread t = new Thread(setVideoInformation);
             t.Start();
+        }
+
+        #region func helpers
+
+        void setVideoInformation()
+        {
+            YouTubeRequestSettings settings = new YouTubeRequestSettings("ytAnnotations",
+            developerKey,
+            tbLogin.Text, tbPw.Text);
+            YouTubeRequest request = new YouTubeRequest(settings);
+
+            string feedUrl = "https://gdata.youtube.com/feeds/api/users/default/uploads/?start-index={0}&max-results=50";
+            Feed<Video> videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, 1)));
+            int i = 0;
+            while (videoFeed.Entries.Count() != 0)
+            {
+                foreach (Video video in videoFeed.Entries)
+                {
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows.Add()));
+                    DataGridViewRow dgvR = dgvMain.Rows[dgvMain.Rows.Count - 1];
+                    dgvMain.Invoke(new Action(() => (dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[0] as DataGridViewCheckBoxCell).Value = false));
+                    string path = video.WatchPage.AbsoluteUri.Remove(video.WatchPage.AbsoluteUri.IndexOf('&'));
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[1].Value = path));
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[2].Value = video.Title));
+                    TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(video.Media.Duration.Seconds));
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[3].Value = ts.ToString()));
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[4].Value = video.ViewCount));
+                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[5].Value = video.CommmentCount));
+                }
+                i += 50;
+                videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, i)));
+            }
+            lblLoginingStatus.Invoke(new Action(() => lblLoginingStatus.Text = "loaded."));
+        }
+
+        bool TemplateFileExist()
+        {
+            string fname = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(s =>
+            {
+                string tmp = "";
+                string[] tmpArr = s.Split('\\');
+                tmp = tmpArr.Where(s1 => s1 == "Templates.xml").SingleOrDefault();
+                if (tmp == "Templates.xml") return true;
+                return false;
+            }
+                ).SingleOrDefault();
+            return !(fname == null);
         }
 
         string getUserName()
@@ -153,7 +212,6 @@ namespace YouTubeAnnotations
             return Regex.Match(wb.DocumentText, "href=\"https://www.youtube.com/user/(.*?)\"").Groups[1].Value;
         }
 
-        #region setter login/logout/wait
         void setLogined()
         {
             btnLogin.Enabled = false;
@@ -183,148 +241,11 @@ namespace YouTubeAnnotations
             return auth != 0;
         }
 
-        void setVideoInformation()
-        {
-            YouTubeRequestSettings settings = new YouTubeRequestSettings("ytAnnotations",
-            developerKey,
-            tbLogin.Text, tbPw.Text);
-            YouTubeRequest request = new YouTubeRequest(settings);
-
-            string feedUrl = "https://gdata.youtube.com/feeds/api/users/default/uploads/?start-index={0}&max-results=50";
-            Feed<Video> videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, 1)));
-            int i = 0;
-            while (videoFeed.Entries.Count() != 0)
-            {
-                foreach (Video video in videoFeed.Entries)
-                {
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows.Add()));
-                    //dgvMain.Rows.Add();
-                    DataGridViewRow dgvR = dgvMain.Rows[dgvMain.Rows.Count - 1];
-                    dgvMain.Invoke(new Action(() => (dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[0] as DataGridViewCheckBoxCell).Value = false));
-                    //(dgvR.Cells[0] as DataGridViewCheckBoxCell).Value = false;
-                    string path = video.WatchPage.AbsoluteUri.Remove(video.WatchPage.AbsoluteUri.IndexOf('&'));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[1].Value = path));
-                    //dgvR.Cells[1].Value = path;
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[2].Value = video.Title));
-                    //dgvR.Cells[2].Value = video.Title;
-                    TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(video.Media.Duration.Seconds));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[3].Value = ts.ToString()));
-                    //dgvR.Cells[3].Value = ts.ToString();
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[4].Value = video.ViewCount));
-                    //dgvR.Cells[4].Value = video.ViewCount;
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[5].Value = video.CommmentCount));
-                    //dgvR.Cells[5].Value = video.CommmentCount;
-                }
-                i += 50;
-                videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, i)));
-            }
-
-
-
-        }
         #endregion
 
-        private void btnClearCache_Click(object sender, EventArgs e)
-        {
-            Process.Start("cmd.exe", "/C RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 255");
-            setLogouted();
-        }
-
-        #region interface logic
-        private void dgvMain_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex == 1)
-            {
-                Process.Start(dgvMain.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-            }
-        }
-
-        private void picForResize_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseResizeClicked = true;
-        }
-
-        private void picForResize_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseResizeClicked)
-            {
-                this.pAnnotation.Height = picForResize.Top + e.Y;
-                this.pAnnotation.Width = picForResize.Left + e.X;
-                lblAnnotationText.MaximumSize = new Size(pAnnotation.Width - 15, 0);
-            }
-        }
-
-        private void picForResize_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseResizeClicked = false;
-        }
-
-        private void btnTextColorPick_Click(object sender, EventArgs e)
-        {
-            if (cdFirst.ShowDialog() == DialogResult.OK)
-            {
-                lblAnnotationText.ForeColor = cdFirst.Color;
-            }
-        }
-
-        private void btnForeColorPick_Click(object sender, EventArgs e)
-        {
-            if (cdFirst.ShowDialog() == DialogResult.OK)
-            {
-                pAnnotation.BackColor = cdFirst.Color;
-            }
-        }
-
-        private void rtbAnnotation_TextChanged(object sender, EventArgs e)
-        {
-            lblAnnotationText.Text = rtbAnnotation.Text;
-        }
-
-        private void pbForReplace_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseReplaceClicked = true;
-        }
-
-        private void pbForReplace_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseReplaceClicked = false;
-        }
-
-        private void pbForReplace_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseReplaceClicked && pAnnotation.Top <= 0)
-            {
-                pAnnotation.Top = 5;
-                mouseReplaceClicked = false;
-            }
-            if (mouseReplaceClicked && pAnnotation.Left < 0)
-            {
-                pAnnotation.Left = 5;
-                mouseReplaceClicked = false;
-            }
-            if (mouseReplaceClicked && pAnnotation.Right > 500)
-            {
-                pAnnotation.Left = 495 - pAnnotation.Width;
-                mouseReplaceClicked = false;
-            }
-            if (mouseReplaceClicked && pAnnotation.Bottom > 300)
-            {
-                pAnnotation.Top = 295 - pAnnotation.Height;
-                mouseReplaceClicked = false;
-            }
-
-            if (mouseReplaceClicked)
-            {
-                this.pAnnotation.Top = pAnnotation.Top + e.Y;
-                this.pAnnotation.Left = pAnnotation.Left + e.X;
-            }
-        }
-
-        private void cbTextSize_SelectedValueChanged(object sender, EventArgs e)
-        {
-            lblAnnotationText.Font = new Font("Arial", (cbTextSize.SelectedIndex + 1) * 3);
-        }
         #endregion
+
+        #region Page Two
 
         private void cbAnnotationName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -584,50 +505,29 @@ namespace YouTubeAnnotations
                 }
             }
 
-            Thread t = new Thread(() =>
-                {
-                    for (int i = 0; i < videos.Count; i++)
-                    {
-                        lblStatusBar.Invoke(new Action(() => lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1]));
-                        wb.Invoke(new Action(() => wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i][0])));
-                        WebBrowserReadyState wbr = WebBrowserReadyState.Loading;
-                        wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                        while (wbr != WebBrowserReadyState.Complete)
-                        {
-                            wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                            System.Windows.Forms.Application.DoEvents();
-                        }
-                        string page = "";
-                        wb.Invoke(new Action(() => page = wb.DocumentText));
-                        string authToken = Regex.Match(page, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
+            for (int i = 0; i < videos.Count; i++)
+            {
+                lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
+                wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i][0]);
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+                string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
 
-                        annot.Element("requestHeader").Attribute("video_id").Value = videos[i][0];
-                        annot.Element("authenticationHeader").Attribute("auth_token").Value = authToken;
-                        annot.Element("authenticationHeader").Attribute("video_id").Value = videos[i][0];
-                        string data = annot.ToString();
+                annot.Element("requestHeader").Attribute("video_id").Value = videos[i][0];
+                annot.Element("authenticationHeader").Attribute("auth_token").Value = authToken;
+                annot.Element("authenticationHeader").Attribute("video_id").Value = videos[i][0];
+                string data = annot.ToString();
 
-                        wb.Invoke(new Action(() => wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded")));
-                        wbr = WebBrowserReadyState.Loading;
-                        wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                        while (wbr != WebBrowserReadyState.Complete)
-                        {
-                            wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                            System.Windows.Forms.Application.DoEvents();
-                        }
+                wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
 
-                        string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videos[i][0], authToken);
-                        wb.Invoke(new Action(() => wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded")));
-                        wbr = WebBrowserReadyState.Loading;
-                        wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                        while (wbr != WebBrowserReadyState.Complete)
-                        {
-                            wb.Invoke(new Action(() => wbr = wb.ReadyState));
-                            System.Windows.Forms.Application.DoEvents();
-                        }
-                    }
-                    lblStatusBar.Invoke(new Action(() => lblStatusBar.Text = "Complete"));
-                });
-            t.Start();
+                string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videos[i][0], authToken);
+                wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+            }
+            lblStatusBar.Text = "Complete";
 
         }
 
@@ -640,52 +540,142 @@ namespace YouTubeAnnotations
                 return;
             }
 
-            cbAnnotationName.Enabled = false;
+            List<List<string>> videos = new List<List<string>>();
+
+            int k = 0;
             foreach (DataGridViewRow item in dgvMain.Rows)
             {
                 if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True")
                 {
-                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
-                    wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
-                    while (wb.ReadyState != WebBrowserReadyState.Complete)
-                        System.Windows.Forms.Application.DoEvents();
-                    string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
-
-                    string anotID = doc.Element("Templates").Element(cbAnnotationName.SelectedItem.ToString()).Element("document").Element("updatedItems").Element("annotation").Attribute("id").Value;
-                    string data = string.Format(sToSend, videoID, authToken, anotID);
-
-                    wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
-                    while (wb.ReadyState != WebBrowserReadyState.Complete)
-                        System.Windows.Forms.Application.DoEvents();
-                    string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videoID, authToken);
-                    wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
-                    while (wb.ReadyState != WebBrowserReadyState.Complete)
-                        System.Windows.Forms.Application.DoEvents();
+                    videos.Add(new List<string>());
+                    videos[k].Add(item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", ""));
+                    videos[k].Add(item.Cells[2].Value.ToString());
+                    k++;
                 }
             }
+            cbAnnotationName.Enabled = false;
+
+
+            for (int i = 0; i < videos.Count; i++)
+            {
+                lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
+                string videoID = videos[i][0].Replace("https://www.youtube.com/watch?v=", "");
+                wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+                string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
+
+                string anotID = doc.Element("Templates").Element(cbAnnotationName.SelectedItem.ToString()).Element("document").Element("updatedItems").Element("annotation").Attribute("id").Value;
+                string data = string.Format(sToSend, videoID, authToken, anotID);
+
+                wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+                string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videoID, authToken);
+                wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+            }
+            lblStatusBar.Text = "Complete";
+
             cbAnnotationName.Enabled = true;
         }
 
-        private void dgvMain_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        #region Annotation Panel
+
+        bool mouseResizeClicked = false;
+        bool mouseReplaceClicked = false;
+
+        private void picForResize_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.ColumnIndex == 0)
+            mouseResizeClicked = true;
+        }
+
+        private void picForResize_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseResizeClicked)
             {
-                if ((dgvMain.Rows[0].Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "False")
-                {
-                    foreach (DataGridViewRow row in dgvMain.Rows)
-                    {
-                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = true;
-                    }
-                }
-                else
-                {
-                    foreach (DataGridViewRow row in dgvMain.Rows)
-                    {
-                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = false;
-                    }
-                }
+                this.pAnnotation.Height = picForResize.Top + e.Y;
+                this.pAnnotation.Width = picForResize.Left + e.X;
+                lblAnnotationText.MaximumSize = new Size(pAnnotation.Width - 15, 0);
             }
         }
 
+        private void picForResize_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseResizeClicked = false;
+        }
+
+        private void btnTextColorPick_Click(object sender, EventArgs e)
+        {
+            if (cdFirst.ShowDialog() == DialogResult.OK)
+            {
+                lblAnnotationText.ForeColor = cdFirst.Color;
+            }
+        }
+
+        private void btnForeColorPick_Click(object sender, EventArgs e)
+        {
+            if (cdFirst.ShowDialog() == DialogResult.OK)
+            {
+                pAnnotation.BackColor = cdFirst.Color;
+            }
+        }
+
+        private void rtbAnnotation_TextChanged(object sender, EventArgs e)
+        {
+            lblAnnotationText.Text = rtbAnnotation.Text;
+        }
+
+        private void pbForReplace_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseReplaceClicked = true;
+        }
+
+        private void pbForReplace_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseReplaceClicked = false;
+        }
+
+        private void pbForReplace_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseReplaceClicked && pAnnotation.Top <= 0)
+            {
+                pAnnotation.Top = 5;
+                mouseReplaceClicked = false;
+            }
+            if (mouseReplaceClicked && pAnnotation.Left < 0)
+            {
+                pAnnotation.Left = 5;
+                mouseReplaceClicked = false;
+            }
+            if (mouseReplaceClicked && pAnnotation.Right > 500)
+            {
+                pAnnotation.Left = 495 - pAnnotation.Width;
+                mouseReplaceClicked = false;
+            }
+            if (mouseReplaceClicked && pAnnotation.Bottom > 300)
+            {
+                pAnnotation.Top = 295 - pAnnotation.Height;
+                mouseReplaceClicked = false;
+            }
+
+            if (mouseReplaceClicked)
+            {
+                this.pAnnotation.Top = pAnnotation.Top + e.Y;
+                this.pAnnotation.Left = pAnnotation.Left + e.X;
+            }
+        }
+
+        private void cbTextSize_SelectedValueChanged(object sender, EventArgs e)
+        {
+            lblAnnotationText.Font = new Font("Arial", (cbTextSize.SelectedIndex + 1) * 3);
+        }
+
+
+        #endregion
+
+        #endregion
+        
     }
 }
