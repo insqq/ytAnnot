@@ -1,0 +1,18 @@
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.exe.config
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.exe
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.pdb
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.Client.dll
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.Extensions.dll
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.YouTube.dll
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.dll
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.pdb
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.xml
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Main.resources
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Properties.Resources.resources
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csproj.GenerateResource.Cache
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.exe
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.pdb
+C:\Users\admin\Documents\Visual Studio 2013\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csprojResolveAssemblyReference.cache
+D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.exe.config
+D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.exe
+D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.pdb
