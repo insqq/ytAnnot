@@ -30,6 +30,7 @@
         {
             this.cdFirst = new System.Windows.Forms.ColorDialog();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblStatusBar = new System.Windows.Forms.Label();
             this.btnDeleteFromSelected = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.tbNewTemaplate = new System.Windows.Forms.TextBox();
@@ -62,6 +63,7 @@
             this.cbAnnotationName = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.pbLoading = new System.Windows.Forms.PictureBox();
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.colChecked = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colUrl = new System.Windows.Forms.DataGridViewLinkColumn();
@@ -78,8 +80,7 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
-            this.pbLoading = new System.Windows.Forms.PictureBox();
-            this.lblStatusBar = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage2.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -87,9 +88,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.picForResize)).BeginInit();
             this.pAnnotationSettings.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.tcMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -112,6 +113,15 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Templates";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // lblStatusBar
+            // 
+            this.lblStatusBar.AutoSize = true;
+            this.lblStatusBar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblStatusBar.Location = new System.Drawing.Point(11, 463);
+            this.lblStatusBar.Name = "lblStatusBar";
+            this.lblStatusBar.Size = new System.Drawing.Size(0, 17);
+            this.lblStatusBar.TabIndex = 12;
             // 
             // btnDeleteFromSelected
             // 
@@ -482,6 +492,14 @@
             this.tabPage1.Text = "Account";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // pbLoading
+            // 
+            this.pbLoading.Location = new System.Drawing.Point(493, 6);
+            this.pbLoading.Name = "pbLoading";
+            this.pbLoading.Size = new System.Drawing.Size(50, 50);
+            this.pbLoading.TabIndex = 17;
+            this.pbLoading.TabStop = false;
+            // 
             // dgvMain
             // 
             this.dgvMain.AllowUserToAddRows = false;
@@ -624,6 +642,7 @@
             // 
             this.tcMain.Controls.Add(this.tabPage1);
             this.tcMain.Controls.Add(this.tabPage2);
+            this.tcMain.Controls.Add(this.tabPage3);
             this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
@@ -631,22 +650,14 @@
             this.tcMain.Size = new System.Drawing.Size(1064, 595);
             this.tcMain.TabIndex = 5;
             // 
-            // pbLoading
+            // tabPage3
             // 
-            this.pbLoading.Location = new System.Drawing.Point(493, 6);
-            this.pbLoading.Name = "pbLoading";
-            this.pbLoading.Size = new System.Drawing.Size(50, 50);
-            this.pbLoading.TabIndex = 17;
-            this.pbLoading.TabStop = false;
-            // 
-            // lblStatusBar
-            // 
-            this.lblStatusBar.AutoSize = true;
-            this.lblStatusBar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblStatusBar.Location = new System.Drawing.Point(11, 463);
-            this.lblStatusBar.Name = "lblStatusBar";
-            this.lblStatusBar.Size = new System.Drawing.Size(0, 17);
-            this.lblStatusBar.TabIndex = 12;
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1056, 569);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -667,9 +678,9 @@
             this.pAnnotationSettings.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
             this.tcMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbLoading)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -728,6 +739,7 @@
         private System.Windows.Forms.TabControl tcMain;
         private System.Windows.Forms.PictureBox pbLoading;
         private System.Windows.Forms.Label lblStatusBar;
+        private System.Windows.Forms.TabPage tabPage3;
 
 
 

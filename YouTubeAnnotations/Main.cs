@@ -62,6 +62,8 @@ namespace YouTubeAnnotations
             //}
             //else
             //    setLogouted();
+            wb.Dock = DockStyle.Fill;
+            tabPage3.Controls.Add(wb);
         }
 
         bool TemplateFileExist()
@@ -587,7 +589,7 @@ namespace YouTubeAnnotations
                     for (int i = 0; i < videos.Count; i++)
                     {
                         lblStatusBar.Invoke(new Action(() => lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1]));
-                        wb.Invoke(new Action(() => wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i])));
+                        wb.Invoke(new Action(() => wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i][0])));
                         WebBrowserReadyState wbr = WebBrowserReadyState.Loading;
                         wb.Invoke(new Action(() => wbr = wb.ReadyState));
                         while (wbr != WebBrowserReadyState.Complete)
