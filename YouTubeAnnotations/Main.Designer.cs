@@ -30,6 +30,7 @@
         {
             this.cdFirst = new System.Windows.Forms.ColorDialog();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnStopAction = new System.Windows.Forms.Button();
             this.lblStatusBar = new System.Windows.Forms.Label();
             this.btnDeleteFromSelected = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
@@ -80,8 +81,6 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btnStopAction = new System.Windows.Forms.Button();
             this.tabPage2.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -114,6 +113,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Templates";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnStopAction
+            // 
+            this.btnStopAction.Location = new System.Drawing.Point(11, 401);
+            this.btnStopAction.Name = "btnStopAction";
+            this.btnStopAction.Size = new System.Drawing.Size(226, 34);
+            this.btnStopAction.TabIndex = 13;
+            this.btnStopAction.Text = "Stop current action";
+            this.btnStopAction.UseVisualStyleBackColor = true;
+            this.btnStopAction.Click += new System.EventHandler(this.btnStopAction_Click);
             // 
             // lblStatusBar
             // 
@@ -644,32 +653,12 @@
             // 
             this.tcMain.Controls.Add(this.tabPage1);
             this.tcMain.Controls.Add(this.tabPage2);
-            this.tcMain.Controls.Add(this.tabPage3);
             this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
             this.tcMain.SelectedIndex = 0;
             this.tcMain.Size = new System.Drawing.Size(1064, 595);
             this.tcMain.TabIndex = 5;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1056, 569);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // btnStopAction
-            // 
-            this.btnStopAction.Location = new System.Drawing.Point(11, 401);
-            this.btnStopAction.Name = "btnStopAction";
-            this.btnStopAction.Size = new System.Drawing.Size(226, 34);
-            this.btnStopAction.TabIndex = 13;
-            this.btnStopAction.Text = "Stop current action";
-            this.btnStopAction.UseVisualStyleBackColor = true;
-            this.btnStopAction.Click += new System.EventHandler(this.btnStopAction_Click);
             // 
             // Main
             // 
@@ -750,7 +739,6 @@
         private System.Windows.Forms.TextBox tbPw;
         private System.Windows.Forms.TabControl tcMain;
         private System.Windows.Forms.Label lblStatusBar;
-        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label lblLoginingStatus;
         private System.Windows.Forms.Button btnStopAction;
 

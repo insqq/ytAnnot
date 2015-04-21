@@ -46,8 +46,6 @@ namespace YouTubeAnnotations
             // check user is logined, configure webbrowser
             wb.ScriptErrorsSuppressed = true;
             btnLogout_Click((object)wb, new EventArgs());
-            wb.Dock = DockStyle.Fill;
-            tabPage3.Controls.Add(wb);
         }
 
         #region Page One

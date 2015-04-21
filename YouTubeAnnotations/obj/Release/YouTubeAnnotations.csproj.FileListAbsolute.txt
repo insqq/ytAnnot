@@ -27,3 +27,4 @@ D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.xml
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Main.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Properties.Resources.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csproj.GenerateResource.Cache
+D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csprojResolveAssemblyReference.cache
