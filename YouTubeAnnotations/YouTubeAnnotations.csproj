@@ -62,8 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnnotationInfo.cs" />
-    <Compile Include="AnnotationsSettingsEnums.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

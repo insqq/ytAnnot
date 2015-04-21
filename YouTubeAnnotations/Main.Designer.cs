@@ -81,6 +81,7 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
+            this.cbSelectAllVideos = new System.Windows.Forms.CheckBox();
             this.tabPage2.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -484,6 +485,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cbSelectAllVideos);
             this.tabPage1.Controls.Add(this.lblLoginingStatus);
             this.tabPage1.Controls.Add(this.dgvMain);
             this.tabPage1.Controls.Add(this.btnClearCache);
@@ -528,7 +530,6 @@
             this.dgvMain.Size = new System.Drawing.Size(1039, 476);
             this.dgvMain.TabIndex = 16;
             this.dgvMain.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMain_CellContentClick);
-            this.dgvMain.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvMain_ColumnHeaderMouseClick);
             // 
             // colChecked
             // 
@@ -660,6 +661,16 @@
             this.tcMain.Size = new System.Drawing.Size(1064, 595);
             this.tcMain.TabIndex = 5;
             // 
+            // cbSelectAllVideos
+            // 
+            this.cbSelectAllVideos.AutoSize = true;
+            this.cbSelectAllVideos.Location = new System.Drawing.Point(216, 59);
+            this.cbSelectAllVideos.Name = "cbSelectAllVideos";
+            this.cbSelectAllVideos.Size = new System.Drawing.Size(105, 17);
+            this.cbSelectAllVideos.TabIndex = 18;
+            this.cbSelectAllVideos.Text = "Select All Videos";
+            this.cbSelectAllVideos.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -741,6 +752,7 @@
         private System.Windows.Forms.Label lblStatusBar;
         private System.Windows.Forms.Label lblLoginingStatus;
         private System.Windows.Forms.Button btnStopAction;
+        private System.Windows.Forms.CheckBox cbSelectAllVideos;
 
 
 

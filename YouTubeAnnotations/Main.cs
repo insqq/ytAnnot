@@ -56,27 +56,6 @@ namespace YouTubeAnnotations
             setLogouted();
         }
 
-        private void dgvMain_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.ColumnIndex == 0)
-            {
-                if ((dgvMain.Rows[0].Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "False")
-                {
-                    foreach (DataGridViewRow row in dgvMain.Rows)
-                    {
-                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = true;
-                    }
-                }
-                else
-                {
-                    foreach (DataGridViewRow row in dgvMain.Rows)
-                    {
-                        (row.Cells[0] as DataGridViewCheckBoxCell).Value = false;
-                    }
-                }
-            }
-        }
-
         private void dgvMain_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == 1)
@@ -488,27 +467,13 @@ namespace YouTubeAnnotations
             annot.Element("updatedItems").Element("annotation").Element("appearance").Attribute("bgColor").Value = (bgColor & 0x00FFFFFF).ToString();
             annot.Element("updatedItems").Element("annotation").Element("appearance").Attribute("highlightFontColor").Value = (highlightFontColor & 0x00FFFFFF).ToString();
 
-            List<List<string>> videos = new List<List<string>>();
-
-            int k = 0;
+            int i = 0;
+            int max = 0;
+            if (!cbSelectAllVideos.Checked)
+                max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
+            else
+                max = dgvMain.Rows.Count;
             foreach (DataGridViewRow item in dgvMain.Rows)
-            {
-                if(cancelAction)
-                {
-                    cancelAction = false;
-                    lblStatusBar.Text = "canceled";
-                    return;
-                }
-                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True")
-                {
-                    videos.Add(new List<string>());
-                    videos[k].Add(item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", ""));
-                    videos[k].Add(item.Cells[2].Value.ToString());
-                    k++;
-                }
-            }
-
-            for (int i = 0; i < videos.Count; i++)
             {
                 if (cancelAction)
                 {
@@ -516,25 +481,31 @@ namespace YouTubeAnnotations
                     lblStatusBar.Text = "canceled";
                     return;
                 }
-                lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
-                wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i][0]);
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
-                string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                {
+                    lblStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
 
-                annot.Element("requestHeader").Attribute("video_id").Value = videos[i][0];
-                annot.Element("authenticationHeader").Attribute("auth_token").Value = authToken;
-                annot.Element("authenticationHeader").Attribute("video_id").Value = videos[i][0];
-                string data = annot.ToString();
+                    annot.Element("requestHeader").Attribute("video_id").Value = videoID;
+                    annot.Element("authenticationHeader").Attribute("auth_token").Value = authToken;
+                    annot.Element("authenticationHeader").Attribute("video_id").Value = videoID;
+                    string data = annot.ToString();
 
-                wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
+                    wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
 
-                string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videos[i][0], authToken);
-                wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
+                    string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videoID, authToken);
+                    wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    i++;
+                }
+
             }
             lblStatusBar.Text = "Complete";
 
@@ -549,9 +520,15 @@ namespace YouTubeAnnotations
                 return;
             }
 
-            List<List<string>> videos = new List<List<string>>();
+            int i = 0;
+            int max = 0;
+            if (!cbSelectAllVideos.Checked)
+                max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
+            else
+                max = dgvMain.Rows.Count;
 
-            int k = 0;
+            cbAnnotationName.Enabled = false;
+
             foreach (DataGridViewRow item in dgvMain.Rows)
             {
                 if (cancelAction)
@@ -560,42 +537,27 @@ namespace YouTubeAnnotations
                     lblStatusBar.Text = "canceled";
                     return;
                 }
-                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True")
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
                 {
-                    videos.Add(new List<string>());
-                    videos[k].Add(item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", ""));
-                    videos[k].Add(item.Cells[2].Value.ToString());
-                    k++;
+                    lblStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
+
+                    string anotID = doc.Element("Templates").Element(cbAnnotationName.SelectedItem.ToString()).Element("document").Element("updatedItems").Element("annotation").Attribute("id").Value;
+                    string data = string.Format(sToSend, videoID, authToken, anotID);
+
+                    wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videoID, authToken);
+                    wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    i++;
                 }
-            }
-            cbAnnotationName.Enabled = false;
-
-
-            for (int i = 0; i < videos.Count; i++)
-            {
-                if (cancelAction)
-                {
-                    cancelAction = false;
-                    lblStatusBar.Text = "canceled";
-                    return;
-                }
-                lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
-                string videoID = videos[i][0].Replace("https://www.youtube.com/watch?v=", "");
-                wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
-                string authToken = Regex.Match(wb.DocumentText, "\"auth_token\":\"(.*?)\"").Groups[1].Value;
-
-                string anotID = doc.Element("Templates").Element(cbAnnotationName.SelectedItem.ToString()).Element("document").Element("updatedItems").Element("annotation").Attribute("id").Value;
-                string data = string.Format(sToSend, videoID, authToken, anotID);
-
-                wb.Navigate("https://www.youtube.com/annotations_auth/update2", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
-                string anotPublisData = string.Format("<document>\n  <requestHeader video_id=\"{0}\"/>\n  <authenticationHeader auth_token=\"{1}\" video_id=\"{0}\"/>\n</document>", videoID, authToken);
-                wb.Navigate("https://www.youtube.com/annotations_auth/publish2", "_self", Encoding.UTF8.GetBytes(anotPublisData), "Content-Type: application/x-www-form-urlencoded");
-                while (wb.ReadyState != WebBrowserReadyState.Complete)
-                    System.Windows.Forms.Application.DoEvents();
             }
             lblStatusBar.Text = "Complete";
 
@@ -702,6 +664,6 @@ namespace YouTubeAnnotations
         }
 
         #endregion
-        
+
     }
 }
