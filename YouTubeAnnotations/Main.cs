@@ -29,8 +29,6 @@ namespace YouTubeAnnotations
         public Main()
         {
             InitializeComponent();
-
-
             if (TemplateFileExist())
             {
                 doc = XDocument.Load("Templates.xml");
@@ -45,7 +43,6 @@ namespace YouTubeAnnotations
             {
                 cbAnnotationName.Items.Add(item.Name);
             }
-
             // check user is logined, configure webbrowser
             wb.ScriptErrorsSuppressed = true;
             btnLogout_Click((object)wb, new EventArgs());
@@ -246,6 +243,8 @@ namespace YouTubeAnnotations
         #endregion
 
         #region Page Two
+
+        bool cancelAction = false;
 
         private void cbAnnotationName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -496,6 +495,12 @@ namespace YouTubeAnnotations
             int k = 0;
             foreach (DataGridViewRow item in dgvMain.Rows)
             {
+                if(cancelAction)
+                {
+                    cancelAction = false;
+                    lblStatusBar.Text = "canceled";
+                    return;
+                }
                 if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True")
                 {
                     videos.Add(new List<string>());
@@ -507,6 +512,12 @@ namespace YouTubeAnnotations
 
             for (int i = 0; i < videos.Count; i++)
             {
+                if (cancelAction)
+                {
+                    cancelAction = false;
+                    lblStatusBar.Text = "canceled";
+                    return;
+                }
                 lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
                 wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videos[i][0]);
                 while (wb.ReadyState != WebBrowserReadyState.Complete)
@@ -545,6 +556,12 @@ namespace YouTubeAnnotations
             int k = 0;
             foreach (DataGridViewRow item in dgvMain.Rows)
             {
+                if (cancelAction)
+                {
+                    cancelAction = false;
+                    lblStatusBar.Text = "canceled";
+                    return;
+                }
                 if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True")
                 {
                     videos.Add(new List<string>());
@@ -558,6 +575,12 @@ namespace YouTubeAnnotations
 
             for (int i = 0; i < videos.Count; i++)
             {
+                if (cancelAction)
+                {
+                    cancelAction = false;
+                    lblStatusBar.Text = "canceled";
+                    return;
+                }
                 lblStatusBar.Text = (i + 1) + "/" + videos.Count + " :" + videos[i][1];
                 string videoID = videos[i][0].Replace("https://www.youtube.com/watch?v=", "");
                 wb.Navigate("https://www.youtube.com/my_videos_annotate?video_referrer=watch&v=" + videoID);
@@ -674,6 +697,11 @@ namespace YouTubeAnnotations
 
 
         #endregion
+
+        private void btnStopAction_Click(object sender, EventArgs e)
+        {
+            cancelAction = true;
+        }
 
         #endregion
         

@@ -63,6 +63,7 @@
             this.cbAnnotationName = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lblLoginingStatus = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.colChecked = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colUrl = new System.Windows.Forms.DataGridViewLinkColumn();
@@ -80,7 +81,7 @@
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.lblLoginingStatus = new System.Windows.Forms.Label();
+            this.btnStopAction = new System.Windows.Forms.Button();
             this.tabPage2.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -94,6 +95,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnStopAction);
             this.tabPage2.Controls.Add(this.lblStatusBar);
             this.tabPage2.Controls.Add(this.btnDeleteFromSelected);
             this.tabPage2.Controls.Add(this.btnApply);
@@ -491,6 +493,15 @@
             this.tabPage1.Text = "Account";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // lblLoginingStatus
+            // 
+            this.lblLoginingStatus.AutoSize = true;
+            this.lblLoginingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblLoginingStatus.Location = new System.Drawing.Point(469, 11);
+            this.lblLoginingStatus.Name = "lblLoginingStatus";
+            this.lblLoginingStatus.Size = new System.Drawing.Size(0, 17);
+            this.lblLoginingStatus.TabIndex = 17;
+            // 
             // dgvMain
             // 
             this.dgvMain.AllowUserToAddRows = false;
@@ -650,14 +661,15 @@
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // lblLoginingStatus
+            // btnStopAction
             // 
-            this.lblLoginingStatus.AutoSize = true;
-            this.lblLoginingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblLoginingStatus.Location = new System.Drawing.Point(469, 11);
-            this.lblLoginingStatus.Name = "lblLoginingStatus";
-            this.lblLoginingStatus.Size = new System.Drawing.Size(0, 17);
-            this.lblLoginingStatus.TabIndex = 17;
+            this.btnStopAction.Location = new System.Drawing.Point(11, 401);
+            this.btnStopAction.Name = "btnStopAction";
+            this.btnStopAction.Size = new System.Drawing.Size(226, 34);
+            this.btnStopAction.TabIndex = 13;
+            this.btnStopAction.Text = "Stop current action";
+            this.btnStopAction.UseVisualStyleBackColor = true;
+            this.btnStopAction.Click += new System.EventHandler(this.btnStopAction_Click);
             // 
             // Main
             // 
@@ -740,6 +752,7 @@
         private System.Windows.Forms.Label lblStatusBar;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label lblLoginingStatus;
+        private System.Windows.Forms.Button btnStopAction;
 
 
 

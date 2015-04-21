@@ -24,7 +24,6 @@ D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.YouTube.dl
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.dll
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.pdb
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.xml
-D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csprojResolveAssemblyReference.cache
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Main.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Properties.Resources.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csproj.GenerateResource.Cache
