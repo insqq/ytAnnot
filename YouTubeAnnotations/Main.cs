@@ -15,6 +15,8 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml;
 using System.Threading;
+using Newtonsoft.Json;
+using System.Runtime;
 
 namespace YouTubeAnnotations
 {
@@ -664,6 +666,73 @@ namespace YouTubeAnnotations
         }
 
         #endregion
+
+        #region Page Three
+
+        List<Post> getFeed()
+        {
+            var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/wall.get.xml?domain=commercenetwork&count=30");
+            var response = (HttpWebResponse)request.GetResponse();
+            string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            List<Post> l = new List<Post>();
+            XDocument news = XDocument.Parse(responseString);
+
+            foreach (XElement item in news.Element("response").Elements("post"))
+            {
+                string Text = item.Element("text").Value.ToString();
+
+                double unixDate;
+                double.TryParse(item.Element("date").Value, out unixDate);
+                DateTime date = UnixTimeStampToDateTime(unixDate);
+
+                string id = item.Element("from_id").Value.ToString() + "_" + item.Element("id").Value.ToString();
+                string link = "https://vk.com/wall" + id;
+                XElement attach = item.Element("attachments");
+
+                Post p = new Post(Text, link, date, attach);
+                l.Add(p);
+            }
+            return l;
+        }
+
+        DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
+
+        #endregion
+
+
+        private void tpNews_Enter(object sender, EventArgs e)
+        {
+            flpMainContent.Controls.Clear();
+            LinkLabel vkUrl = new LinkLabel();
+            vkUrl.Text = "vk.com/commercenetwork" + Environment.NewLine + Environment.NewLine;
+            vkUrl.AutoSize = true;
+            vkUrl.ForeColor = System.Drawing.ColorTranslator.FromHtml("#5BB1E6");
+            vkUrl.Click += (s, ev) => { Process.Start("https://vk.com/commercenetwork"); };
+
+            flpMainContent.Controls.Add(vkUrl);
+
+            Label tmp = new Label();
+            tmp.Text = "Loading news...";
+            flpMainContent.Controls.Add(tmp);
+
+            Thread t = new Thread(() =>
+            {
+                foreach (Post item in getFeed())
+                {
+                    flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Add(item)));
+                }
+                flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Remove(tmp)));
+                flpMainContent.Invoke(new Action(() => flpMainContent.Focus()));
+            });
+            t.Start();
+        }
 
     }
 }

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.cdFirst = new System.Windows.Forms.ColorDialog();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tpTemplates = new System.Windows.Forms.TabPage();
             this.btnStopAction = new System.Windows.Forms.Button();
             this.lblStatusBar = new System.Windows.Forms.Label();
             this.btnDeleteFromSelected = new System.Windows.Forms.Button();
@@ -63,7 +63,8 @@
             this.btnAddTemplate = new System.Windows.Forms.Button();
             this.cbAnnotationName = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tpAccount = new System.Windows.Forms.TabPage();
+            this.cbSelectAllVideos = new System.Windows.Forms.CheckBox();
             this.lblLoginingStatus = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.colChecked = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -81,39 +82,41 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.tbPw = new System.Windows.Forms.TextBox();
             this.tcMain = new System.Windows.Forms.TabControl();
-            this.cbSelectAllVideos = new System.Windows.Forms.CheckBox();
-            this.tabPage2.SuspendLayout();
+            this.tpNews = new System.Windows.Forms.TabPage();
+            this.flpMainContent = new System.Windows.Forms.FlowLayoutPanel();
+            this.tpTemplates.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbForReplace)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picForResize)).BeginInit();
             this.pAnnotationSettings.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tpAccount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.tcMain.SuspendLayout();
+            this.tpNews.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabPage2
+            // tpTemplates
             // 
-            this.tabPage2.Controls.Add(this.btnStopAction);
-            this.tabPage2.Controls.Add(this.lblStatusBar);
-            this.tabPage2.Controls.Add(this.btnDeleteFromSelected);
-            this.tabPage2.Controls.Add(this.btnApply);
-            this.tabPage2.Controls.Add(this.tbNewTemaplate);
-            this.tabPage2.Controls.Add(this.pVideo);
-            this.tabPage2.Controls.Add(this.pAnnotationSettings);
-            this.tabPage2.Controls.Add(this.btnDelete);
-            this.tabPage2.Controls.Add(this.btnEdit);
-            this.tabPage2.Controls.Add(this.btnAddTemplate);
-            this.tabPage2.Controls.Add(this.cbAnnotationName);
-            this.tabPage2.Controls.Add(this.label1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1056, 569);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Templates";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tpTemplates.Controls.Add(this.btnStopAction);
+            this.tpTemplates.Controls.Add(this.lblStatusBar);
+            this.tpTemplates.Controls.Add(this.btnDeleteFromSelected);
+            this.tpTemplates.Controls.Add(this.btnApply);
+            this.tpTemplates.Controls.Add(this.tbNewTemaplate);
+            this.tpTemplates.Controls.Add(this.pVideo);
+            this.tpTemplates.Controls.Add(this.pAnnotationSettings);
+            this.tpTemplates.Controls.Add(this.btnDelete);
+            this.tpTemplates.Controls.Add(this.btnEdit);
+            this.tpTemplates.Controls.Add(this.btnAddTemplate);
+            this.tpTemplates.Controls.Add(this.cbAnnotationName);
+            this.tpTemplates.Controls.Add(this.label1);
+            this.tpTemplates.Location = new System.Drawing.Point(4, 22);
+            this.tpTemplates.Name = "tpTemplates";
+            this.tpTemplates.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTemplates.Size = new System.Drawing.Size(1056, 569);
+            this.tpTemplates.TabIndex = 1;
+            this.tpTemplates.Text = "Templates";
+            this.tpTemplates.UseVisualStyleBackColor = true;
             // 
             // btnStopAction
             // 
@@ -483,26 +486,36 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Templates: ";
             // 
-            // tabPage1
+            // tpAccount
             // 
-            this.tabPage1.Controls.Add(this.cbSelectAllVideos);
-            this.tabPage1.Controls.Add(this.lblLoginingStatus);
-            this.tabPage1.Controls.Add(this.dgvMain);
-            this.tabPage1.Controls.Add(this.btnClearCache);
-            this.tabPage1.Controls.Add(this.lblStatus);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.lblName);
-            this.tabPage1.Controls.Add(this.btnLogout);
-            this.tabPage1.Controls.Add(this.tbLogin);
-            this.tabPage1.Controls.Add(this.btnLogin);
-            this.tabPage1.Controls.Add(this.tbPw);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1056, 569);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Account";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tpAccount.Controls.Add(this.cbSelectAllVideos);
+            this.tpAccount.Controls.Add(this.lblLoginingStatus);
+            this.tpAccount.Controls.Add(this.dgvMain);
+            this.tpAccount.Controls.Add(this.btnClearCache);
+            this.tpAccount.Controls.Add(this.lblStatus);
+            this.tpAccount.Controls.Add(this.label2);
+            this.tpAccount.Controls.Add(this.lblName);
+            this.tpAccount.Controls.Add(this.btnLogout);
+            this.tpAccount.Controls.Add(this.tbLogin);
+            this.tpAccount.Controls.Add(this.btnLogin);
+            this.tpAccount.Controls.Add(this.tbPw);
+            this.tpAccount.Location = new System.Drawing.Point(4, 22);
+            this.tpAccount.Name = "tpAccount";
+            this.tpAccount.Padding = new System.Windows.Forms.Padding(3);
+            this.tpAccount.Size = new System.Drawing.Size(1056, 569);
+            this.tpAccount.TabIndex = 0;
+            this.tpAccount.Text = "Account";
+            this.tpAccount.UseVisualStyleBackColor = true;
+            // 
+            // cbSelectAllVideos
+            // 
+            this.cbSelectAllVideos.AutoSize = true;
+            this.cbSelectAllVideos.Location = new System.Drawing.Point(216, 59);
+            this.cbSelectAllVideos.Name = "cbSelectAllVideos";
+            this.cbSelectAllVideos.Size = new System.Drawing.Size(105, 17);
+            this.cbSelectAllVideos.TabIndex = 18;
+            this.cbSelectAllVideos.Text = "Select All Videos";
+            this.cbSelectAllVideos.UseVisualStyleBackColor = true;
             // 
             // lblLoginingStatus
             // 
@@ -652,8 +665,9 @@
             // 
             // tcMain
             // 
-            this.tcMain.Controls.Add(this.tabPage1);
-            this.tcMain.Controls.Add(this.tabPage2);
+            this.tcMain.Controls.Add(this.tpAccount);
+            this.tcMain.Controls.Add(this.tpTemplates);
+            this.tcMain.Controls.Add(this.tpNews);
             this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
@@ -661,15 +675,25 @@
             this.tcMain.Size = new System.Drawing.Size(1064, 595);
             this.tcMain.TabIndex = 5;
             // 
-            // cbSelectAllVideos
+            // tpNews
             // 
-            this.cbSelectAllVideos.AutoSize = true;
-            this.cbSelectAllVideos.Location = new System.Drawing.Point(216, 59);
-            this.cbSelectAllVideos.Name = "cbSelectAllVideos";
-            this.cbSelectAllVideos.Size = new System.Drawing.Size(105, 17);
-            this.cbSelectAllVideos.TabIndex = 18;
-            this.cbSelectAllVideos.Text = "Select All Videos";
-            this.cbSelectAllVideos.UseVisualStyleBackColor = true;
+            this.tpNews.Controls.Add(this.flpMainContent);
+            this.tpNews.Location = new System.Drawing.Point(4, 22);
+            this.tpNews.Name = "tpNews";
+            this.tpNews.Size = new System.Drawing.Size(1056, 569);
+            this.tpNews.TabIndex = 2;
+            this.tpNews.Text = "News";
+            this.tpNews.UseVisualStyleBackColor = true;
+            this.tpNews.Enter += new System.EventHandler(this.tpNews_Enter);
+            // 
+            // flpMainContent
+            // 
+            this.flpMainContent.AutoScroll = true;
+            this.flpMainContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpMainContent.Location = new System.Drawing.Point(0, 0);
+            this.flpMainContent.Name = "flpMainContent";
+            this.flpMainContent.Size = new System.Drawing.Size(1056, 569);
+            this.flpMainContent.TabIndex = 0;
             // 
             // Main
             // 
@@ -680,8 +704,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Main";
             this.Text = "ytAnnotations";
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
+            this.tpTemplates.ResumeLayout(false);
+            this.tpTemplates.PerformLayout();
             this.pVideo.ResumeLayout(false);
             this.pAnnotation.ResumeLayout(false);
             this.pAnnotation.PerformLayout();
@@ -689,10 +713,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.picForResize)).EndInit();
             this.pAnnotationSettings.ResumeLayout(false);
             this.pAnnotationSettings.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.tpAccount.ResumeLayout(false);
+            this.tpAccount.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
             this.tcMain.ResumeLayout(false);
+            this.tpNews.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -700,7 +725,7 @@
         #endregion
 
         private System.Windows.Forms.ColorDialog cdFirst;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tpTemplates;
         private System.Windows.Forms.Button btnDeleteFromSelected;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.TextBox tbNewTemaplate;
@@ -732,7 +757,7 @@
         private System.Windows.Forms.Button btnAddTemplate;
         private System.Windows.Forms.ComboBox cbAnnotationName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tpAccount;
         private System.Windows.Forms.DataGridView dgvMain;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colChecked;
         private System.Windows.Forms.DataGridViewLinkColumn colUrl;
@@ -753,6 +778,8 @@
         private System.Windows.Forms.Label lblLoginingStatus;
         private System.Windows.Forms.Button btnStopAction;
         private System.Windows.Forms.CheckBox cbSelectAllVideos;
+        private System.Windows.Forms.TabPage tpNews;
+        private System.Windows.Forms.FlowLayoutPanel flpMainContent;
 
 
 
