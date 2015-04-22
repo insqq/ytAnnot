@@ -50,7 +50,6 @@ namespace YouTubeAnnotations
                         url.ForeColor = System.Drawing.ColorTranslator.FromHtml("#5BB1E6");
                         url.Click += (s, ev) => { Process.Start(url.Text); };
                     }
-
                 }
             }
 
