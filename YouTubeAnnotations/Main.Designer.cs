@@ -84,6 +84,7 @@
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tpNews = new System.Windows.Forms.TabPage();
             this.flpMainContent = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnDeleteCopyrightVideos = new System.Windows.Forms.Button();
             this.tpTemplates.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -98,6 +99,7 @@
             // 
             // tpTemplates
             // 
+            this.tpTemplates.Controls.Add(this.btnDeleteCopyrightVideos);
             this.tpTemplates.Controls.Add(this.btnStopAction);
             this.tpTemplates.Controls.Add(this.lblStatusBar);
             this.tpTemplates.Controls.Add(this.btnDeleteFromSelected);
@@ -684,7 +686,6 @@
             this.tpNews.TabIndex = 2;
             this.tpNews.Text = "News";
             this.tpNews.UseVisualStyleBackColor = true;
-            this.tpNews.Enter += new System.EventHandler(this.tpNews_Enter);
             // 
             // flpMainContent
             // 
@@ -694,6 +695,16 @@
             this.flpMainContent.Name = "flpMainContent";
             this.flpMainContent.Size = new System.Drawing.Size(1056, 569);
             this.flpMainContent.TabIndex = 0;
+            // 
+            // btnDeleteCopyrightVideos
+            // 
+            this.btnDeleteCopyrightVideos.Location = new System.Drawing.Point(517, 441);
+            this.btnDeleteCopyrightVideos.Name = "btnDeleteCopyrightVideos";
+            this.btnDeleteCopyrightVideos.Size = new System.Drawing.Size(268, 34);
+            this.btnDeleteCopyrightVideos.TabIndex = 14;
+            this.btnDeleteCopyrightVideos.Text = "Delete videos with copyright warning";
+            this.btnDeleteCopyrightVideos.UseVisualStyleBackColor = true;
+            this.btnDeleteCopyrightVideos.Click += new System.EventHandler(this.btnDeleteCopyrightVideos_Click);
             // 
             // Main
             // 
@@ -780,6 +791,7 @@
         private System.Windows.Forms.CheckBox cbSelectAllVideos;
         private System.Windows.Forms.TabPage tpNews;
         private System.Windows.Forms.FlowLayoutPanel flpMainContent;
+        private System.Windows.Forms.Button btnDeleteCopyrightVideos;
 
 
 

@@ -27,7 +27,6 @@ namespace YouTubeAnnotations
         string youtubeLoginUrl = "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Fnext%3D%252F%26action_handle_signin%3Dtrue%26feature%3Dsign_in_button%26hl%3Dru%26app%3Ddesktop&passive=true&uilel=3&hl=ru&service=youtube";
         WebBrowser wb = new WebBrowser();
 
-
         public Main()
         {
             InitializeComponent();
@@ -48,6 +47,9 @@ namespace YouTubeAnnotations
             // check user is logined, configure webbrowser
             wb.ScriptErrorsSuppressed = true;
             btnLogout_Click((object)wb, new EventArgs());
+
+            Thread t = new Thread(getFeed);
+            t.Start();
         }
 
         #region Page One
@@ -224,6 +226,36 @@ namespace YouTubeAnnotations
         #region Page Two
 
         bool cancelAction = false;
+
+        private void btnDeleteCopyrightVideos_Click(object sender, EventArgs e)
+        {
+            ActionInProgress();
+            wb.Navigate("https://www.youtube.com/my_videos_copyright");
+            while (wb.ReadyState != WebBrowserReadyState.Complete)
+                System.Windows.Forms.Application.DoEvents();
+
+            List<string> l = new List<string>();
+            string token = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value.ToString();
+
+            foreach (Match item in Regex.Matches(wb.DocumentText, "<li id=\"vm-video-(.*?)\""))
+            {
+                l.Add(item.Groups[1].Value.ToString());
+            }
+
+            int i = 1;
+            foreach (string item in l)
+            {
+                lblStatusBar.Text = i + "/" + l.Count + "  video ID: " + item;
+                string data = "v=" + item + "&session_token=" + token;
+
+                wb.Navigate("https://www.youtube.com/video_ajax?num_videos=1&action_delete_videos=1&o=U", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                while (wb.ReadyState != WebBrowserReadyState.Complete)
+                    System.Windows.Forms.Application.DoEvents();
+                i++;
+            }
+            lblStatusBar.Text = "Complete";
+            ActionOutProgress();
+        }
 
         private void cbAnnotationName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -459,6 +491,7 @@ namespace YouTubeAnnotations
                 lblStatusBar.Text = "fail";
                 return;
             }
+            ActionInProgress();
 
             XElement annot = doc.Element("Templates").Element(cbAnnotationName.SelectedItem.ToString()).Element("document");
 
@@ -481,6 +514,7 @@ namespace YouTubeAnnotations
                 {
                     cancelAction = false;
                     lblStatusBar.Text = "canceled";
+                    ActionOutProgress();
                     return;
                 }
                 if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
@@ -510,7 +544,7 @@ namespace YouTubeAnnotations
 
             }
             lblStatusBar.Text = "Complete";
-
+            ActionOutProgress();
         }
 
         private void btnDeleteFromSelected_Click(object sender, EventArgs e)
@@ -521,7 +555,7 @@ namespace YouTubeAnnotations
                 MessageBox.Show("Select template first");
                 return;
             }
-
+            ActionInProgress();
             int i = 0;
             int max = 0;
             if (!cbSelectAllVideos.Checked)
@@ -529,14 +563,13 @@ namespace YouTubeAnnotations
             else
                 max = dgvMain.Rows.Count;
 
-            cbAnnotationName.Enabled = false;
-
             foreach (DataGridViewRow item in dgvMain.Rows)
             {
                 if (cancelAction)
                 {
                     cancelAction = false;
                     lblStatusBar.Text = "canceled";
+                    ActionOutProgress();
                     return;
                 }
                 if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
@@ -563,7 +596,27 @@ namespace YouTubeAnnotations
             }
             lblStatusBar.Text = "Complete";
 
+            ActionOutProgress();
+        }
+
+        void ActionInProgress()
+        {
+            cbAnnotationName.Enabled = false;
+            btnDelete.Enabled = false;
+            btnAddTemplate.Enabled = false;
+            btnDeleteFromSelected.Enabled = false;
+            btnApply.Enabled = false;
+            btnDeleteCopyrightVideos.Enabled = false;
+        }
+
+        void ActionOutProgress()
+        {
             cbAnnotationName.Enabled = true;
+            btnDelete.Enabled = true;
+            btnAddTemplate.Enabled = true;
+            btnDeleteFromSelected.Enabled = true;
+            btnApply.Enabled = true;
+            btnDeleteCopyrightVideos.Enabled = true;
         }
 
         #region Annotation Panel
@@ -669,8 +722,20 @@ namespace YouTubeAnnotations
 
         #region Page Three
 
-        List<Post> getFeed()
+        void getFeed()
         {
+            LinkLabel vkUrl = new LinkLabel();
+            vkUrl.Text = "vk.com/commercenetwork" + Environment.NewLine + Environment.NewLine;
+            vkUrl.AutoSize = true;
+            vkUrl.ForeColor = System.Drawing.ColorTranslator.FromHtml("#5BB1E6");
+            vkUrl.Click += (s, ev) => { Process.Start("https://vk.com/commercenetwork"); };
+
+            flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Add(vkUrl)));
+
+            Label tmp = new Label();
+            tmp.Text = "Loading news...";
+            flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Add(tmp)));
+
             var request = (HttpWebRequest)WebRequest.Create("https://api.vk.com/method/wall.get.xml?domain=commercenetwork&count=30");
             var response = (HttpWebResponse)request.GetResponse();
             string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
@@ -693,7 +758,14 @@ namespace YouTubeAnnotations
                 Post p = new Post(Text, link, date, attach);
                 l.Add(p);
             }
-            return l;
+
+            
+            foreach (Post item in l)
+            {
+                flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Add(item)));
+            }
+            flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Remove(tmp)));
+            flpMainContent.Invoke(new Action(() => flpMainContent.Focus()));
         }
 
         DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -703,36 +775,7 @@ namespace YouTubeAnnotations
             return dtDateTime;
         }
 
-
         #endregion
-
-
-        private void tpNews_Enter(object sender, EventArgs e)
-        {
-            flpMainContent.Controls.Clear();
-            LinkLabel vkUrl = new LinkLabel();
-            vkUrl.Text = "vk.com/commercenetwork" + Environment.NewLine + Environment.NewLine;
-            vkUrl.AutoSize = true;
-            vkUrl.ForeColor = System.Drawing.ColorTranslator.FromHtml("#5BB1E6");
-            vkUrl.Click += (s, ev) => { Process.Start("https://vk.com/commercenetwork"); };
-
-            flpMainContent.Controls.Add(vkUrl);
-
-            Label tmp = new Label();
-            tmp.Text = "Loading news...";
-            flpMainContent.Controls.Add(tmp);
-
-            Thread t = new Thread(() =>
-            {
-                foreach (Post item in getFeed())
-                {
-                    flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Add(item)));
-                }
-                flpMainContent.Invoke(new Action(() => flpMainContent.Controls.Remove(tmp)));
-                flpMainContent.Invoke(new Action(() => flpMainContent.Focus()));
-            });
-            t.Start();
-        }
 
     }
 }

@@ -28,3 +28,4 @@ D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Main
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Properties.Resources.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csproj.GenerateResource.Cache
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Post.resources
+D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csprojResolveAssemblyReference.cache
