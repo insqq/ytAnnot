@@ -460,6 +460,11 @@ namespace YouTubeAnnotations
             if (flag)
             {
                 if (tbNewTemaplate.Text == "") return;
+                if(tbNewTemaplate.Text.IndexOf(' ') != -1)
+                {
+                    MessageBox.Show("Temaplate's name can't include space chars");
+                    return;
+                }
                 doc.Element("Templates").Add(new XElement(tbNewTemaplate.Text));
                 cbAnnotationName.Items.Add(tbNewTemaplate.Text);
                 cbAnnotationName.SelectedIndex = cbAnnotationName.Items.IndexOf(tbNewTemaplate.Text);

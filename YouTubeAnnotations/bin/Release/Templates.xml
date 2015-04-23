@@ -21,4 +21,22 @@
       </updatedItems>
     </document>
   </new>
+  <NEW_SHABLON>
+    <document>
+      <requestHeader video_id="" />
+      <authenticationHeader auth_token="" video_id="" />
+      <updatedItems>
+        <annotation author="" id="3130856271" type="text" style="popup">
+          <appearance fgColor="-16777216" bgColor="-256" bgAlpha="0.6" highlightFontColor="-16777216" textSize="5" effects="" />
+          <segment>
+            <movingRegion type="rect" pattern="fixed">
+              <rectRegion t="00:00:00" d="0" x="6" y="10" w="46" h="15" />
+              <rectRegion t="00:00:00" d="0" x="6" y="10" w="46" h="15" />
+            </movingRegion>
+          </segment>
+          <TEXT></TEXT>
+        </annotation>
+      </updatedItems>
+    </document>
+  </NEW_SHABLON>
 </Templates>
