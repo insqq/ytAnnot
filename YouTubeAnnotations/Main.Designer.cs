@@ -74,7 +74,6 @@
             this.colLenght = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colViews = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colComments = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnClearCache = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
@@ -511,7 +510,6 @@
             this.tpAccount.Controls.Add(this.cbSelectAllVideos);
             this.tpAccount.Controls.Add(this.lblLoginingStatus);
             this.tpAccount.Controls.Add(this.dgvMain);
-            this.tpAccount.Controls.Add(this.btnClearCache);
             this.tpAccount.Controls.Add(this.lblStatus);
             this.tpAccount.Controls.Add(this.label2);
             this.tpAccount.Controls.Add(this.lblName);
@@ -610,16 +608,6 @@
             this.colComments.Name = "colComments";
             this.colComments.ReadOnly = true;
             this.colComments.Width = 81;
-            // 
-            // btnClearCache
-            // 
-            this.btnClearCache.Location = new System.Drawing.Point(549, 35);
-            this.btnClearCache.Name = "btnClearCache";
-            this.btnClearCache.Size = new System.Drawing.Size(78, 23);
-            this.btnClearCache.TabIndex = 14;
-            this.btnClearCache.Text = "clear cache";
-            this.btnClearCache.UseVisualStyleBackColor = true;
-            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
             // 
             // lblStatus
             // 
@@ -860,7 +848,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colLenght;
         private System.Windows.Forms.DataGridViewTextBoxColumn colViews;
         private System.Windows.Forms.DataGridViewTextBoxColumn colComments;
-        private System.Windows.Forms.Button btnClearCache;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblName;
