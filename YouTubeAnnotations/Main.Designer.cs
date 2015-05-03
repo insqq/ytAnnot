@@ -30,6 +30,7 @@
         {
             this.cdFirst = new System.Windows.Forms.ColorDialog();
             this.tpTemplates = new System.Windows.Forms.TabPage();
+            this.btnDeleteCopyrightVideos = new System.Windows.Forms.Button();
             this.btnStopAction = new System.Windows.Forms.Button();
             this.lblStatusBar = new System.Windows.Forms.Label();
             this.btnDeleteFromSelected = new System.Windows.Forms.Button();
@@ -84,7 +85,13 @@
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tpNews = new System.Windows.Forms.TabPage();
             this.flpMainContent = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnDeleteCopyrightVideos = new System.Windows.Forms.Button();
+            this.tpMonetize = new System.Windows.Forms.TabPage();
+            this.lblStatusPage4 = new System.Windows.Forms.Label();
+            this.btnMonetizeAdd = new System.Windows.Forms.Button();
+            this.cbLowRange = new System.Windows.Forms.CheckBox();
+            this.cbNonSkippedAnnonth = new System.Windows.Forms.CheckBox();
+            this.cbSkippedAnonth = new System.Windows.Forms.CheckBox();
+            this.cbOverlay = new System.Windows.Forms.CheckBox();
             this.tpTemplates.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -95,6 +102,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.tcMain.SuspendLayout();
             this.tpNews.SuspendLayout();
+            this.tpMonetize.SuspendLayout();
             this.SuspendLayout();
             // 
             // tpTemplates
@@ -119,6 +127,16 @@
             this.tpTemplates.TabIndex = 1;
             this.tpTemplates.Text = "Templates";
             this.tpTemplates.UseVisualStyleBackColor = true;
+            // 
+            // btnDeleteCopyrightVideos
+            // 
+            this.btnDeleteCopyrightVideos.Location = new System.Drawing.Point(517, 441);
+            this.btnDeleteCopyrightVideos.Name = "btnDeleteCopyrightVideos";
+            this.btnDeleteCopyrightVideos.Size = new System.Drawing.Size(268, 34);
+            this.btnDeleteCopyrightVideos.TabIndex = 14;
+            this.btnDeleteCopyrightVideos.Text = "Delete videos with copyright warning";
+            this.btnDeleteCopyrightVideos.UseVisualStyleBackColor = true;
+            this.btnDeleteCopyrightVideos.Click += new System.EventHandler(this.btnDeleteCopyrightVideos_Click);
             // 
             // btnStopAction
             // 
@@ -667,9 +685,10 @@
             // 
             // tcMain
             // 
+            this.tcMain.Controls.Add(this.tpNews);
             this.tcMain.Controls.Add(this.tpAccount);
             this.tcMain.Controls.Add(this.tpTemplates);
-            this.tcMain.Controls.Add(this.tpNews);
+            this.tcMain.Controls.Add(this.tpMonetize);
             this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
@@ -696,15 +715,78 @@
             this.flpMainContent.Size = new System.Drawing.Size(1056, 569);
             this.flpMainContent.TabIndex = 0;
             // 
-            // btnDeleteCopyrightVideos
+            // tpMonetize
             // 
-            this.btnDeleteCopyrightVideos.Location = new System.Drawing.Point(517, 441);
-            this.btnDeleteCopyrightVideos.Name = "btnDeleteCopyrightVideos";
-            this.btnDeleteCopyrightVideos.Size = new System.Drawing.Size(268, 34);
-            this.btnDeleteCopyrightVideos.TabIndex = 14;
-            this.btnDeleteCopyrightVideos.Text = "Delete videos with copyright warning";
-            this.btnDeleteCopyrightVideos.UseVisualStyleBackColor = true;
-            this.btnDeleteCopyrightVideos.Click += new System.EventHandler(this.btnDeleteCopyrightVideos_Click);
+            this.tpMonetize.Controls.Add(this.lblStatusPage4);
+            this.tpMonetize.Controls.Add(this.btnMonetizeAdd);
+            this.tpMonetize.Controls.Add(this.cbLowRange);
+            this.tpMonetize.Controls.Add(this.cbNonSkippedAnnonth);
+            this.tpMonetize.Controls.Add(this.cbSkippedAnonth);
+            this.tpMonetize.Controls.Add(this.cbOverlay);
+            this.tpMonetize.Location = new System.Drawing.Point(4, 22);
+            this.tpMonetize.Name = "tpMonetize";
+            this.tpMonetize.Size = new System.Drawing.Size(1056, 569);
+            this.tpMonetize.TabIndex = 3;
+            this.tpMonetize.Text = "Monetize";
+            this.tpMonetize.UseVisualStyleBackColor = true;
+            // 
+            // lblStatusPage4
+            // 
+            this.lblStatusPage4.AutoSize = true;
+            this.lblStatusPage4.Location = new System.Drawing.Point(8, 210);
+            this.lblStatusPage4.Name = "lblStatusPage4";
+            this.lblStatusPage4.Size = new System.Drawing.Size(0, 13);
+            this.lblStatusPage4.TabIndex = 8;
+            // 
+            // btnMonetizeAdd
+            // 
+            this.btnMonetizeAdd.Location = new System.Drawing.Point(8, 138);
+            this.btnMonetizeAdd.Name = "btnMonetizeAdd";
+            this.btnMonetizeAdd.Size = new System.Drawing.Size(126, 23);
+            this.btnMonetizeAdd.TabIndex = 7;
+            this.btnMonetizeAdd.Text = "Add to selected";
+            this.btnMonetizeAdd.UseVisualStyleBackColor = true;
+            this.btnMonetizeAdd.Click += new System.EventHandler(this.btnMonetizeAdd_Click);
+            // 
+            // cbLowRange
+            // 
+            this.cbLowRange.AutoSize = true;
+            this.cbLowRange.Location = new System.Drawing.Point(8, 115);
+            this.cbLowRange.Name = "cbLowRange";
+            this.cbLowRange.Size = new System.Drawing.Size(454, 17);
+            this.cbLowRange.TabIndex = 5;
+            this.cbLowRange.Text = "Объявления без возможности пропуска, длительность которых не более 30 секунд";
+            this.cbLowRange.UseVisualStyleBackColor = true;
+            // 
+            // cbNonSkippedAnnonth
+            // 
+            this.cbNonSkippedAnnonth.AutoSize = true;
+            this.cbNonSkippedAnnonth.Location = new System.Drawing.Point(8, 80);
+            this.cbNonSkippedAnnonth.Name = "cbNonSkippedAnnonth";
+            this.cbNonSkippedAnnonth.Size = new System.Drawing.Size(232, 17);
+            this.cbNonSkippedAnnonth.TabIndex = 4;
+            this.cbNonSkippedAnnonth.Text = "Объявления без возможности пропуска";
+            this.cbNonSkippedAnnonth.UseVisualStyleBackColor = true;
+            // 
+            // cbSkippedAnonth
+            // 
+            this.cbSkippedAnonth.AutoSize = true;
+            this.cbSkippedAnonth.Location = new System.Drawing.Point(8, 48);
+            this.cbSkippedAnonth.Name = "cbSkippedAnonth";
+            this.cbSkippedAnonth.Size = new System.Drawing.Size(228, 17);
+            this.cbSkippedAnonth.TabIndex = 3;
+            this.cbSkippedAnonth.Text = "Объявления с возможностью пропуска";
+            this.cbSkippedAnonth.UseVisualStyleBackColor = true;
+            // 
+            // cbOverlay
+            // 
+            this.cbOverlay.AutoSize = true;
+            this.cbOverlay.Location = new System.Drawing.Point(8, 13);
+            this.cbOverlay.Name = "cbOverlay";
+            this.cbOverlay.Size = new System.Drawing.Size(70, 17);
+            this.cbOverlay.TabIndex = 2;
+            this.cbOverlay.Text = "Оверлеи";
+            this.cbOverlay.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -729,6 +811,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
             this.tcMain.ResumeLayout(false);
             this.tpNews.ResumeLayout(false);
+            this.tpMonetize.ResumeLayout(false);
+            this.tpMonetize.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -792,6 +876,13 @@
         private System.Windows.Forms.TabPage tpNews;
         private System.Windows.Forms.FlowLayoutPanel flpMainContent;
         private System.Windows.Forms.Button btnDeleteCopyrightVideos;
+        private System.Windows.Forms.TabPage tpMonetize;
+        private System.Windows.Forms.CheckBox cbLowRange;
+        private System.Windows.Forms.CheckBox cbNonSkippedAnnonth;
+        private System.Windows.Forms.CheckBox cbSkippedAnonth;
+        private System.Windows.Forms.CheckBox cbOverlay;
+        private System.Windows.Forms.Button btnMonetizeAdd;
+        private System.Windows.Forms.Label lblStatusPage4;
 
 
 

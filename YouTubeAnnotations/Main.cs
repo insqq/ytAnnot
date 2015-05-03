@@ -17,6 +17,9 @@ using System.Xml;
 using System.Threading;
 using Newtonsoft.Json;
 using System.Runtime;
+using System.Web;
+using System.Runtime.InteropServices;
+
 
 namespace YouTubeAnnotations
 {
@@ -26,10 +29,26 @@ namespace YouTubeAnnotations
         string developerKey = "AI39si7b0mdxvmauCnJDjsxsyiBYpWstXFC38n9qbr-7nGoEC5zQXaiDdVzuH0qmhYriNJ64FYsTQCOkXFUBYGKVF6AIAhZ9kw";
         string youtubeLoginUrl = "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Fnext%3D%252F%26action_handle_signin%3Dtrue%26feature%3Dsign_in_button%26hl%3Dru%26app%3Ddesktop&passive=true&uilel=3&hl=ru&service=youtube";
         WebBrowser wb = new WebBrowser();
+        Thread tGetVideoInfo;
+        bool LoadingVideosInfo = false;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
         public Main()
         {
             InitializeComponent();
+
+            wb.FileDownload += (s, er) =>
+            {
+                IntPtr hwnd = FindWindow(null, "File Download");
+                SetForegroundWindow(hwnd);
+                SendKeys.Send("{ESC}");
+            };
+
             if (TemplateFileExist())
             {
                 doc = XDocument.Load("Templates.xml");
@@ -50,9 +69,18 @@ namespace YouTubeAnnotations
 
             Thread t = new Thread(getFeed);
             t.Start();
+
+
+
+            /*tbLogin.Text = "bivolghenadie@gmail.com";
+            tbPw.Text = "inguta81s";
+            tpTester.Controls.Add(wb);
+            wb.Dock = DockStyle.Fill;*/
+            
+
         }
 
-        #region Page One
+        #region Page Account
 
         private void btnClearCache_Click(object sender, EventArgs e)
         {
@@ -70,7 +98,9 @@ namespace YouTubeAnnotations
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
+            LoadingVideosInfo = false;
             setWaitState();
+
             wb.Navigate("https://youtube.com/logout");
             while (wb.ReadyState != WebBrowserReadyState.Complete)
                 System.Windows.Forms.Application.DoEvents();
@@ -128,14 +158,15 @@ namespace YouTubeAnnotations
             lblStatus.Text = "channel: " + channelName;
             setLogined();
 
-            Thread t = new Thread(setVideoInformation);
-            t.Start();
+            tGetVideoInfo = new Thread(setVideoInformation);
+            tGetVideoInfo.Start();
         }
 
         #region func helpers
 
         void setVideoInformation()
         {
+            LoadingVideosInfo = true;
             YouTubeRequestSettings settings = new YouTubeRequestSettings("ytAnnotations",
             developerKey,
             tbLogin.Text, tbPw.Text);
@@ -148,6 +179,7 @@ namespace YouTubeAnnotations
             {
                 foreach (Video video in videoFeed.Entries)
                 {
+                    if (!LoadingVideosInfo) return;
                     dgvMain.Invoke(new Action(() => dgvMain.Rows.Add()));
                     DataGridViewRow dgvR = dgvMain.Rows[dgvMain.Rows.Count - 1];
                     dgvMain.Invoke(new Action(() => (dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[0] as DataGridViewCheckBoxCell).Value = false));
@@ -223,7 +255,7 @@ namespace YouTubeAnnotations
 
         #endregion
 
-        #region Page Two
+        #region Page Templates
 
         bool cancelAction = false;
 
@@ -725,7 +757,7 @@ namespace YouTubeAnnotations
 
         #endregion
 
-        #region Page Three
+        #region Page News
 
         void getFeed()
         {
@@ -782,5 +814,72 @@ namespace YouTubeAnnotations
 
         #endregion
 
+
+
+        #region Page Monetize
+
+        private void btnMonetizeAdd_Click(object sender, EventArgs e)
+        {
+
+            int i = 0;
+            int max = 0;
+            if (!cbSelectAllVideos.Checked)
+                max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
+            else
+                max = dgvMain.Rows.Count;
+            foreach (DataGridViewRow item in dgvMain.Rows)
+            {
+                if (cancelAction)
+                {
+                    cancelAction = false;
+                    //lblStatusBar.Text = "canceled";
+                    //ActionOutProgress();
+                    return;
+                }
+
+                string data = "";
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                {
+                    lblStatusPage4.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    wb.Navigate("https://www.youtube.com/edit?video_id=" + videoID);
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    string page = Regex.Replace(wb.DocumentText, "" + (char)10, "");
+                    string authToken = Regex.Match(wb.DocumentText, "sessionToken\': \"(.*?)\"").Groups[1].Value;
+                    string title = Regex.Match(wb.DocumentText, "name=\"web_title\" value=\"(.*?)\"").Groups[1].Value;
+                    string description = Regex.Match(page, "textarea class=\"yt-uix-form-input-textarea video-settings-description\" name=\"description\"(.*?)>(.*?)<").Groups[2].Value;
+                    string keywords = Regex.Match(page, "<input type=\"hidden\" name=\"keywords\" class=\"video-settings-tags\" value=\"(.*?)\"").Groups[1].Value;
+
+                    data = "title=" + title + "&";
+                    data += "description=" + description + "&";
+                    data += "keywords=" + keywords + "&" + "privacy=public&privacy_draft=none&still_id=2&claim_style=ads&claim_usage_privacy=SRN8mwLm3LM&allow_comments=yes&allow_comments_detail=all&allow_ratings=yes&reuse=creative_commons&syndication=everywhere&allow_embedding=yes&";
+                    string category = Regex.Match(page, "name=\"category\"(.*?)</select>").Groups[0].Value;
+                    foreach (Match m in Regex.Matches(category, "<option value=\"(.*?)\"(.*?)</option>"))
+                    {
+                        if (m.Value.IndexOf("selected") != -1)
+                        {
+                            category = m.Groups[1].Value; 
+                        }
+                    }
+                    string formats = "{\"has_overlay_ads\":" + cbOverlay.Checked.ToString().ToLower() + ",\"has_skippable_video_ads\":" +
+                        cbSkippedAnonth.Checked.ToString().ToLower() + ",\"has_non_skippable_video_ads\":" +
+                        cbNonSkippedAnnonth.Checked.ToString().ToLower() + ",\"has_long_non_skippable_video_ads\":" +
+                        cbLowRange.Checked.ToString().ToLower() + "}&";
+
+                    data += "category=" + category + "&threed_type=default&threed_layout=1&allow_public_stats=yes&creator_share_gplus=no&creator_share_twitter=no&creator_share_feeds=yes&self_racy=no&ad_formats=" + formats;
+                    data += "modified_fields=ad_formats&video_id=" + videoID + "&session_token=" + authToken;
+
+
+                    wb.Navigate("https://www.youtube.com/metadata_ajax?action_edit_video=1", "_self", Encoding.UTF8.GetBytes(data), "Content-Type: application/x-www-form-urlencoded");
+                    while (wb.ReadyState != WebBrowserReadyState.Complete)
+                        System.Windows.Forms.Application.DoEvents();
+                    i++;
+                }
+
+                lblStatusPage4.Text = "Complete";
+            }
+        }
+        #endregion
     }
 }
