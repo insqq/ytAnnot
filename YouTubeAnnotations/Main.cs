@@ -1,6 +1,4 @@
-﻿using Google.GData.Client;
-using Google.YouTube;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,23 +17,25 @@ using Newtonsoft.Json;
 using System.Runtime;
 using System.Web;
 using System.Runtime.InteropServices;
-
+using Newtonsoft.Json.Linq;
 
 namespace YouTubeAnnotations
 {
     public partial class Main : Form
     {
+        
         XDocument doc;
         string developerKey = "AI39si7b0mdxvmauCnJDjsxsyiBYpWstXFC38n9qbr-7nGoEC5zQXaiDdVzuH0qmhYriNJ64FYsTQCOkXFUBYGKVF6AIAhZ9kw";
         string youtubeLoginUrl = "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Fnext%3D%252F%26action_handle_signin%3Dtrue%26feature%3Dsign_in_button%26hl%3Dru%26app%3Ddesktop&passive=true&uilel=3&hl=ru&service=youtube";
         Browser wb = new Browser();
-        Thread tGetVideoInfo;
+        List<Thread> tGetVideoInfo = new List<Thread>();
         bool LoadingVideosInfo = false;
 
         public Main()
         {
             InitializeComponent();
 
+            TabPage testings = new TabPage("test browser");
             if (TemplateFileExist())
             {
                 doc = XDocument.Load("Templates.xml");
@@ -54,17 +54,89 @@ namespace YouTubeAnnotations
             //wb.ScriptErrorsSuppressed = true;
             btnLogout_Click((object)wb, new EventArgs());
 
+
+
+
+
+            //tbLogin.Text = "bivolghenadie@gmail.com";
+            //tbPw.Text = "inguta81s";*/
+            //tbLogin.Text = "beuker93@gmail.com";
+            //tbPw.Text = "Cdzndeyl11";
             Thread t = new Thread(getFeed);
             t.Start();
+        }
 
+        string getAccessToken(string email, string pswd)
+        {
+            string page = wb.Navigate(youtubeLoginUrl);
+            page = Regex.Replace(page, "" + (char)10, "");
+            string data = "";
+            foreach (Match input in Regex.Matches(page, "<input(.*?)>"))
+            {
+                string tmp = input.Value;
+                string name = Regex.Match(tmp, "name=\"(.*?)\"").Groups[1].Value;
+                data += name + "=";
+                if (name == "Email")
+                {
+                    data += email + "&";
+                    continue;
+                }
+                if (name == "Passwd")
+                {
+                    data += pswd + "&";
+                    continue;
+                }
+                data += Regex.Match(tmp, "value=\"(.*?)\"").Groups[1].Value + "&";
+            }
+            data = data.Remove(data.Length - 1, 1);
+            data = data.Replace("amp;", "");
 
+            // login
+            wb.Navigate(youtubeLoginUrl, data);
 
-            /*tbLogin.Text = "bivolghenadie@gmail.com";
-            tbPw.Text = "inguta81s";*/
-            tbLogin.Text = "beuker93@gmail.com";
-            tbPw.Text = "cdzncsy1";
+            // pick accounts
+            page = wb.Navigate("https://accounts.google.com/o/oauth2/auth?client_id=357960218741-elgp2dlo51001lqk6fu3riuq7pib97d2.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline");
+            
+            page = Regex.Replace(page, "" + (char)10, "");
 
+            string liAccount = "<li id=\"account-(.*?)</li>";
+            if (Regex.IsMatch(page, liAccount))
+            {
+                foreach (Match item in Regex.Matches(page, liAccount))
+                {
+                }
+                Match q = Regex.Match(Regex.Match(page, liAccount).Groups[0].Value, "<a href=\"(.*?)\"");
+                page = wb.Navigate(q.Groups[1].Value.Replace("amp;", ""));
+                // end picking first account
+                page = Regex.Replace(page, "" + (char)10, "");
+            }
+            
+            string form = Regex.Match(page, "<form id=\"connect-approve\"(.*?)</form>").Groups[1].Value;
+            data = "";
+            foreach (Match input in Regex.Matches(form, "<input (.*?)>"))
+            {
+                string igv = input.Groups[1].Value;
+                if (Regex.IsMatch(igv, "id=\"state_wrapper\""))
+                {
+                    data += Regex.Match(igv, "name=\"(.*?)\"").Groups[1].Value + "=";
+                    data += Regex.Match(igv, "value=\"(.*?)\"").Groups[1].Value + "&";
+                }
+            }
+            data += "submit_access=true";
 
+            string url = Regex.Match(form, "action=\"(.*?)\"").Groups[1].Value.Replace("amp;","");
+            page = wb.Navigate(url, data);
+            string code = Regex.Match(page, "<input(.*?)value=\"(.*?)\"").Groups[2].Value;
+            string client_id = "357960218741-elgp2dlo51001lqk6fu3riuq7pib97d2.apps.googleusercontent.com";
+            string client_secret = "61q7mVh5wPeSuss0dqN3J9D8";
+            string redirect_url = "urn:ietf:wg:oauth:2.0:oob";
+
+            data = string.Format("code={0}&client_id={1}&client_secret={2}&redirect_uri={3}&grant_type=authorization_code", code, client_id, client_secret, redirect_url);
+            url = "https://accounts.google.com/o/oauth2/token";
+
+            page = wb.Navigate(url, data);
+
+            return (string)JObject.Parse(page)["access_token"];
         }
 
         #region Page Account
@@ -124,50 +196,53 @@ namespace YouTubeAnnotations
             if (channelName == "")
             {
                 setLogouted();
-                lblStatus.Text = "Incorrect email or password\n or try to clear your cache";
+                lblStatus.Text = "Incorrect email or password\n or try to login throught browser";
                 lblLoginingStatus.Text = "";
                 return;
             }
-            lblStatus.Text = "channel: " + channelName;
             setLogined();
 
-            tGetVideoInfo = new Thread(setVideoInformation);
-            tGetVideoInfo.Start();
+            Thread loadVidThread = new Thread(() => setVideoInformation(getAccessToken(tbLogin.Text, tbPw.Text)));
+            loadVidThread.Start();
+            
         }
 
         #region func helpers
 
-        void setVideoInformation()
+        void setVideoInformation(string token)
         {
             LoadingVideosInfo = true;
-            YouTubeRequestSettings settings = new YouTubeRequestSettings("ytAnnotations",
-            developerKey,
-            tbLogin.Text, tbPw.Text);
-            YouTubeRequest request = new YouTubeRequest(settings);
-
-            string feedUrl = "https://gdata.youtube.com/feeds/api/users/default/uploads/?start-index={0}&max-results=50";
-            Feed<Video> videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, 1)));
-            int i = 0;
-            while (videoFeed.Entries.Count() != 0)
+            foreach (string channel in getChannels(token))
             {
-                foreach (Video video in videoFeed.Entries)
+                string url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId={0}&mine=true&access_token={1}&{2}";
+                VideosJson videos = JsonConvert.DeserializeObject<VideosJson>(wb.NavigateJson(string.Format(url, channel, token, "")));
+                string npt = null;
+                do
                 {
-                    if (!LoadingVideosInfo) return;
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows.Add()));
-                    DataGridViewRow dgvR = dgvMain.Rows[dgvMain.Rows.Count - 1];
-                    dgvMain.Invoke(new Action(() => (dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[0] as DataGridViewCheckBoxCell).Value = false));
-                    string path = video.WatchPage.AbsoluteUri.Remove(video.WatchPage.AbsoluteUri.IndexOf('&'));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[1].Value = path));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[2].Value = video.Title));
-                    TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(video.Media.Duration.Seconds));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[3].Value = ts.ToString()));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[4].Value = video.ViewCount));
-                    dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[5].Value = video.CommmentCount));
+                    npt = videos.nextPageToken == null ? null : "pageToken=" + videos.nextPageToken;
+                    foreach (VideosJson.itms video in videos.items)
+                    {
+                        if (!LoadingVideosInfo) return;
+                        dgvMain.Invoke(new Action(() => dgvMain.Rows.Add()));
+                        DataGridViewRow dgvR = dgvMain.Rows[dgvMain.Rows.Count - 1];
+                        dgvMain.Invoke(new Action(() => (dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[0] as DataGridViewCheckBoxCell).Value = false));
+                        string path = "https://www.youtube.com/watch?v=" + video.snippet.resourceId.videoId;
+                        dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[1].Value = path));
+                        dgvMain.Invoke(new Action(() => dgvMain.Rows[dgvMain.Rows.Count - 1].Cells[2].Value = video.snippet.title));
+                    }
+                    videos = JsonConvert.DeserializeObject<VideosJson>(wb.NavigateJson(string.Format(url, channel, token, npt)));
                 }
-                i += 50;
-                videoFeed = request.Get<Video>(new Uri(string.Format(feedUrl, i)));
+                while (npt != null);
+                lblLoginingStatus.Invoke(new Action(() => lblLoginingStatus.Text = "loaded."));
             }
-            lblLoginingStatus.Invoke(new Action(() => lblLoginingStatus.Text = "loaded."));
+        }
+
+        private List<string> getChannels(string token)
+        {
+            string channelsUrl = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true&access_token=" + token;
+            return ((JArray)JObject.Parse(wb.NavigateJson(channelsUrl))["items"])
+            .Select(jobj => (string)jobj["contentDetails"]["relatedPlaylists"]["uploads"])
+            .ToList();
         }
 
         bool TemplateFileExist()
@@ -853,7 +928,6 @@ namespace YouTubeAnnotations
 
         #endregion
 
-
         #region Page Monetize
 
         private void btnMonetizeAdd_Click(object sender, EventArgs e)
@@ -927,5 +1001,6 @@ namespace YouTubeAnnotations
             t.Start();
         }
         #endregion
+
     }
 }

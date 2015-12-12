@@ -18,13 +18,10 @@ D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.exe
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.pdb
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.exe
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\YouTubeAnnotations.pdb
-D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.Client.dll
-D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.Extensions.dll
-D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Google.GData.YouTube.dll
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.dll
-D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.pdb
 D:\Projects\ytAnnotations\YouTubeAnnotations\bin\Release\Newtonsoft.Json.xml
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Main.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Properties.Resources.resources
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csproj.GenerateResource.Cache
 D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.Post.resources
+D:\Projects\ytAnnotations\YouTubeAnnotations\obj\Release\YouTubeAnnotations.csprojResolveAssemblyReference.cache
