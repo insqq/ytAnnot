@@ -270,6 +270,7 @@ namespace YouTubeAnnotations
 
         void setLogined()
         {
+            lblStatus.Text = "";
             btnLogin.Enabled = false;
             btnLogout.Enabled = true;
         }

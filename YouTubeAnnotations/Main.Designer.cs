@@ -91,6 +91,7 @@
             this.cbNonSkippedAnnonth = new System.Windows.Forms.CheckBox();
             this.cbSkippedAnonth = new System.Windows.Forms.CheckBox();
             this.cbOverlay = new System.Windows.Forms.CheckBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tpTemplates.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -677,6 +678,7 @@
             this.tcMain.Controls.Add(this.tpAccount);
             this.tcMain.Controls.Add(this.tpTemplates);
             this.tcMain.Controls.Add(this.tpMonetize);
+            this.tcMain.Controls.Add(this.tabPage1);
             this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
@@ -776,6 +778,15 @@
             this.cbOverlay.Text = "Оверлеи";
             this.cbOverlay.UseVisualStyleBackColor = true;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(1056, 569);
+            this.tabPage1.TabIndex = 4;
+            this.tabPage1.Text = "YoutubeTips";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -870,6 +881,7 @@
         private System.Windows.Forms.CheckBox cbOverlay;
         private System.Windows.Forms.Button btnMonetizeAdd;
         private System.Windows.Forms.Label lblStatusPage4;
+        private System.Windows.Forms.TabPage tabPage1;
 
 
 
