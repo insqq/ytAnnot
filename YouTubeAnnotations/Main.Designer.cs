@@ -92,6 +92,22 @@
             this.cbSkippedAnonth = new System.Windows.Forms.CheckBox();
             this.cbOverlay = new System.Windows.Forms.CheckBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lblCallToAction = new System.Windows.Forms.Label();
+            this.tbCallToAction = new System.Windows.Forms.TextBox();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.tbTitle = new System.Windows.Forms.TextBox();
+            this.lblTipsStatusBar = new System.Windows.Forms.Label();
+            this.lblStartTime = new System.Windows.Forms.Label();
+            this.tbStartTime = new System.Windows.Forms.TextBox();
+            this.btnAddTips = new System.Windows.Forms.Button();
+            this.lblUrl = new System.Windows.Forms.Label();
+            this.tbUrl = new System.Windows.Forms.TextBox();
+            this.lblTipType = new System.Windows.Forms.Label();
+            this.cbTipType = new System.Windows.Forms.ComboBox();
+            this.lblTeaserText = new System.Windows.Forms.Label();
+            this.tbTeaserText = new System.Windows.Forms.TextBox();
+            this.btnCancelTipAction = new System.Windows.Forms.Button();
+            this.btnRemoveTips = new System.Windows.Forms.Button();
             this.tpTemplates.SuspendLayout();
             this.pVideo.SuspendLayout();
             this.pAnnotation.SuspendLayout();
@@ -103,6 +119,7 @@
             this.tcMain.SuspendLayout();
             this.tpNews.SuspendLayout();
             this.tpMonetize.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tpTemplates
@@ -780,12 +797,186 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnRemoveTips);
+            this.tabPage1.Controls.Add(this.btnCancelTipAction);
+            this.tabPage1.Controls.Add(this.lblTeaserText);
+            this.tabPage1.Controls.Add(this.tbTeaserText);
+            this.tabPage1.Controls.Add(this.lblCallToAction);
+            this.tabPage1.Controls.Add(this.tbCallToAction);
+            this.tabPage1.Controls.Add(this.lblTitle);
+            this.tabPage1.Controls.Add(this.tbTitle);
+            this.tabPage1.Controls.Add(this.lblTipsStatusBar);
+            this.tabPage1.Controls.Add(this.lblStartTime);
+            this.tabPage1.Controls.Add(this.tbStartTime);
+            this.tabPage1.Controls.Add(this.btnAddTips);
+            this.tabPage1.Controls.Add(this.lblUrl);
+            this.tabPage1.Controls.Add(this.tbUrl);
+            this.tabPage1.Controls.Add(this.lblTipType);
+            this.tabPage1.Controls.Add(this.cbTipType);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(1056, 569);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "YoutubeTips";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lblCallToAction
+            // 
+            this.lblCallToAction.AutoSize = true;
+            this.lblCallToAction.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblCallToAction.Location = new System.Drawing.Point(304, 148);
+            this.lblCallToAction.Name = "lblCallToAction";
+            this.lblCallToAction.Size = new System.Drawing.Size(89, 17);
+            this.lblCallToAction.TabIndex = 11;
+            this.lblCallToAction.Text = "Call to action";
+            // 
+            // tbCallToAction
+            // 
+            this.tbCallToAction.Enabled = false;
+            this.tbCallToAction.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbCallToAction.Location = new System.Drawing.Point(304, 168);
+            this.tbCallToAction.Name = "tbCallToAction";
+            this.tbCallToAction.Size = new System.Drawing.Size(182, 23);
+            this.tbCallToAction.TabIndex = 10;
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblTitle.Location = new System.Drawing.Point(5, 148);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(35, 17);
+            this.lblTitle.TabIndex = 9;
+            this.lblTitle.Text = "Title";
+            // 
+            // tbTitle
+            // 
+            this.tbTitle.Enabled = false;
+            this.tbTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbTitle.Location = new System.Drawing.Point(8, 168);
+            this.tbTitle.Name = "tbTitle";
+            this.tbTitle.Size = new System.Drawing.Size(240, 23);
+            this.tbTitle.TabIndex = 8;
+            // 
+            // lblTipsStatusBar
+            // 
+            this.lblTipsStatusBar.AutoSize = true;
+            this.lblTipsStatusBar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblTipsStatusBar.Location = new System.Drawing.Point(11, 268);
+            this.lblTipsStatusBar.Name = "lblTipsStatusBar";
+            this.lblTipsStatusBar.Size = new System.Drawing.Size(0, 17);
+            this.lblTipsStatusBar.TabIndex = 7;
+            // 
+            // lblStartTime
+            // 
+            this.lblStartTime.AutoSize = true;
+            this.lblStartTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblStartTime.Location = new System.Drawing.Point(304, 83);
+            this.lblStartTime.Name = "lblStartTime";
+            this.lblStartTime.Size = new System.Drawing.Size(185, 17);
+            this.lblStartTime.TabIndex = 6;
+            this.lblStartTime.Text = "Delay before show up (sec):";
+            // 
+            // tbStartTime
+            // 
+            this.tbStartTime.Enabled = false;
+            this.tbStartTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbStartTime.Location = new System.Drawing.Point(304, 103);
+            this.tbStartTime.Name = "tbStartTime";
+            this.tbStartTime.Size = new System.Drawing.Size(182, 23);
+            this.tbStartTime.TabIndex = 5;
+            this.tbStartTime.Text = "0";
+            // 
+            // btnAddTips
+            // 
+            this.btnAddTips.Location = new System.Drawing.Point(8, 326);
+            this.btnAddTips.Name = "btnAddTips";
+            this.btnAddTips.Size = new System.Drawing.Size(240, 34);
+            this.btnAddTips.TabIndex = 4;
+            this.btnAddTips.Text = "add to selected";
+            this.btnAddTips.UseVisualStyleBackColor = true;
+            this.btnAddTips.Click += new System.EventHandler(this.btnAddTips_Click);
+            // 
+            // lblUrl
+            // 
+            this.lblUrl.AutoSize = true;
+            this.lblUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblUrl.Location = new System.Drawing.Point(8, 83);
+            this.lblUrl.Name = "lblUrl";
+            this.lblUrl.Size = new System.Drawing.Size(30, 17);
+            this.lblUrl.TabIndex = 3;
+            this.lblUrl.Text = "Url:";
+            // 
+            // tbUrl
+            // 
+            this.tbUrl.Enabled = false;
+            this.tbUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbUrl.Location = new System.Drawing.Point(8, 103);
+            this.tbUrl.Name = "tbUrl";
+            this.tbUrl.Size = new System.Drawing.Size(240, 23);
+            this.tbUrl.TabIndex = 2;
+            // 
+            // lblTipType
+            // 
+            this.lblTipType.AutoSize = true;
+            this.lblTipType.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblTipType.Location = new System.Drawing.Point(8, 14);
+            this.lblTipType.Name = "lblTipType";
+            this.lblTipType.Size = new System.Drawing.Size(63, 17);
+            this.lblTipType.TabIndex = 1;
+            this.lblTipType.Text = "Tip type:";
+            // 
+            // cbTipType
+            // 
+            this.cbTipType.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbTipType.FormattingEnabled = true;
+            this.cbTipType.Items.AddRange(new object[] {
+            "Video or playlist",
+            "Link"});
+            this.cbTipType.Location = new System.Drawing.Point(8, 34);
+            this.cbTipType.Name = "cbTipType";
+            this.cbTipType.Size = new System.Drawing.Size(240, 24);
+            this.cbTipType.TabIndex = 0;
+            this.cbTipType.SelectedIndexChanged += new System.EventHandler(this.cbTipType_SelectedIndexChanged);
+            // 
+            // lblTeaserText
+            // 
+            this.lblTeaserText.AutoSize = true;
+            this.lblTeaserText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblTeaserText.Location = new System.Drawing.Point(5, 194);
+            this.lblTeaserText.Name = "lblTeaserText";
+            this.lblTeaserText.Size = new System.Drawing.Size(79, 17);
+            this.lblTeaserText.TabIndex = 13;
+            this.lblTeaserText.Text = "Teaser text";
+            // 
+            // tbTeaserText
+            // 
+            this.tbTeaserText.Enabled = false;
+            this.tbTeaserText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbTeaserText.Location = new System.Drawing.Point(8, 214);
+            this.tbTeaserText.Name = "tbTeaserText";
+            this.tbTeaserText.Size = new System.Drawing.Size(240, 23);
+            this.tbTeaserText.TabIndex = 12;
+            // 
+            // btnCancelTipAction
+            // 
+            this.btnCancelTipAction.Location = new System.Drawing.Point(254, 326);
+            this.btnCancelTipAction.Name = "btnCancelTipAction";
+            this.btnCancelTipAction.Size = new System.Drawing.Size(240, 34);
+            this.btnCancelTipAction.TabIndex = 14;
+            this.btnCancelTipAction.Text = "stop current actions";
+            this.btnCancelTipAction.UseVisualStyleBackColor = true;
+            this.btnCancelTipAction.Click += new System.EventHandler(this.btnCancelTipAction_Click);
+            // 
+            // btnRemoveTips
+            // 
+            this.btnRemoveTips.Location = new System.Drawing.Point(808, 14);
+            this.btnRemoveTips.Name = "btnRemoveTips";
+            this.btnRemoveTips.Size = new System.Drawing.Size(240, 34);
+            this.btnRemoveTips.TabIndex = 15;
+            this.btnRemoveTips.Text = "delete tips from selected";
+            this.btnRemoveTips.UseVisualStyleBackColor = true;
+            this.btnRemoveTips.Click += new System.EventHandler(this.btnRemoveTips_Click);
             // 
             // Main
             // 
@@ -812,6 +1003,8 @@
             this.tpNews.ResumeLayout(false);
             this.tpMonetize.ResumeLayout(false);
             this.tpMonetize.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -882,6 +1075,22 @@
         private System.Windows.Forms.Button btnMonetizeAdd;
         private System.Windows.Forms.Label lblStatusPage4;
         private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.Label lblTipType;
+        private System.Windows.Forms.ComboBox cbTipType;
+        private System.Windows.Forms.Label lblUrl;
+        private System.Windows.Forms.TextBox tbUrl;
+        private System.Windows.Forms.TextBox tbStartTime;
+        private System.Windows.Forms.Button btnAddTips;
+        private System.Windows.Forms.Label lblStartTime;
+        private System.Windows.Forms.Label lblTipsStatusBar;
+        private System.Windows.Forms.Label lblCallToAction;
+        private System.Windows.Forms.TextBox tbCallToAction;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.TextBox tbTitle;
+        private System.Windows.Forms.Label lblTeaserText;
+        private System.Windows.Forms.TextBox tbTeaserText;
+        private System.Windows.Forms.Button btnCancelTipAction;
+        private System.Windows.Forms.Button btnRemoveTips;
 
 
 

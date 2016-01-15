@@ -23,7 +23,7 @@ namespace YouTubeAnnotations
 {
     public partial class Main : Form
     {
-        
+
         XDocument doc;
         string developerKey = "AI39si7b0mdxvmauCnJDjsxsyiBYpWstXFC38n9qbr-7nGoEC5zQXaiDdVzuH0qmhYriNJ64FYsTQCOkXFUBYGKVF6AIAhZ9kw";
         string youtubeLoginUrl = "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Fnext%3D%252F%26action_handle_signin%3Dtrue%26feature%3Dsign_in_button%26hl%3Dru%26app%3Ddesktop&passive=true&uilel=3&hl=ru&service=youtube";
@@ -96,7 +96,7 @@ namespace YouTubeAnnotations
 
             // pick accounts
             page = wb.Navigate("https://accounts.google.com/o/oauth2/auth?client_id=357960218741-elgp2dlo51001lqk6fu3riuq7pib97d2.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline");
-            
+
             page = Regex.Replace(page, "" + (char)10, "");
 
             string liAccount = "<li id=\"account-(.*?)</li>";
@@ -110,7 +110,7 @@ namespace YouTubeAnnotations
                 // end picking first account
                 page = Regex.Replace(page, "" + (char)10, "");
             }
-            
+
             string form = Regex.Match(page, "<form id=\"connect-approve\"(.*?)</form>").Groups[1].Value;
             data = "";
             foreach (Match input in Regex.Matches(form, "<input (.*?)>"))
@@ -124,7 +124,7 @@ namespace YouTubeAnnotations
             }
             data += "submit_access=true";
 
-            string url = Regex.Match(form, "action=\"(.*?)\"").Groups[1].Value.Replace("amp;","");
+            string url = Regex.Match(form, "action=\"(.*?)\"").Groups[1].Value.Replace("amp;", "");
             page = wb.Navigate(url, data);
             string code = Regex.Match(page, "<input(.*?)value=\"(.*?)\"").Groups[2].Value;
             string client_id = "357960218741-elgp2dlo51001lqk6fu3riuq7pib97d2.apps.googleusercontent.com";
@@ -204,7 +204,7 @@ namespace YouTubeAnnotations
 
             Thread loadVidThread = new Thread(() => setVideoInformation(getAccessToken(tbLogin.Text, tbPw.Text)));
             loadVidThread.Start();
-            
+
         }
 
         #region func helpers
@@ -653,10 +653,6 @@ namespace YouTubeAnnotations
             });
 
             t.Start();
-
-
-
-
         }
 
         private void btnDeleteFromSelected_Click(object sender, EventArgs e)
@@ -1003,5 +999,236 @@ namespace YouTubeAnnotations
         }
         #endregion
 
+        #region Page Tips
+
+        bool tipCancelAction = false;
+
+        private void cbTipType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = (sender as ComboBox).SelectedIndex;
+            if (index == 0)
+            {
+                tbUrl.Enabled = true;
+                tbStartTime.Enabled = true;
+                tbTitle.Enabled = false;
+                tbTeaserText.Enabled = false;
+                tbCallToAction.Enabled = false;
+            }
+            else if (index == 1)
+            {
+                tbUrl.Enabled = true;
+                tbStartTime.Enabled = true;
+                tbTitle.Enabled = true;
+                tbTeaserText.Enabled = true;
+                tbCallToAction.Enabled = true;
+            }
+        }
+
+        private void btnAddTips_Click(object sender, EventArgs e)
+        {
+            if (tbUrl.Text == "")
+            {
+                MessageBox.Show("Please input link");
+                return;
+            }
+            if (cbTipType.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please choose tip type");
+                return;
+            }
+            Thread t;
+            int index = cbTipType.SelectedIndex;
+            if (index == 0) t = new Thread(createTipToVideo);
+            else t = new Thread(createTipToSite);
+            t.Start();
+        }
+
+        private void createTipToVideo()
+        {
+            tipsInProgress();
+            tipCancelAction = false;
+            int i = 0;
+            int max = 0;
+            if (!cbSelectAllVideos.Checked)
+                max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
+            else
+                max = dgvMain.Rows.Count;
+            foreach (DataGridViewRow item in dgvMain.Rows)
+            {
+                if (tipCancelAction)
+                {
+                    lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "canceled"));
+                    tipsOutProgress();
+                    return;
+                }
+
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                {
+                    if (lblTipsStatusBar.InvokeRequired)
+                        lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value));
+                    else
+                        lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    string videoUrl = item.Cells[1].Value.ToString();
+                    wb.Navigate(string.Format("https://www.youtube.com/cards?v={0}&video_referrer=watch#", videoID));
+                    string sessionToken = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value;
+
+                    string data = "";
+                    addMultipartParam("key", "", ref data);
+                    addMultipartParam("type", "video", ref data);
+                    addMultipartParam("start_ms", tbStartTime.Text, ref data);
+                    addMultipartParam("show_warnings", "true", ref data);
+                    addMultipartParam("video_url", tbUrl.Text, ref data);
+                    addMultipartParam("action_create_video", "1", ref data);
+                    addMultipartParam("session_token", sessionToken, ref data, true);
+                    wb.NavigateMultipart("https://www.youtube.com/cards_ajax?v=" + videoID, data);
+                    i++;
+                }
+
+            }
+            tipsOutProgress();
+            lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "tips added to " + i + " videos"));
+        }
+
+        private void createTipToSite()
+        {
+            tipsInProgress();
+            tipCancelAction = false;
+            int i = 0;
+            int max = 0;
+            if (!cbSelectAllVideos.Checked)
+                max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
+            else
+                max = dgvMain.Rows.Count;
+            foreach (DataGridViewRow item in dgvMain.Rows)
+            {
+                if (tipCancelAction)
+                {
+                    lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "canceled"));
+                    tipsOutProgress();
+                    return;
+                }
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                {
+                    if (lblTipsStatusBar.InvokeRequired)
+                        lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value));
+                    else
+                        lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    string videoUrl = item.Cells[1].Value.ToString();
+                    wb.Navigate(string.Format("https://www.youtube.com/cards?v={0}&video_referrer=watch#", videoID));
+                    string sessionToken = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value;
+
+                    string postData = "target_url=" + tbUrl.Text;
+                    postData += "&action_get_url_info=1";
+                    postData += "&type=link";
+                    postData += "&session_token=" + sessionToken;
+                    string res = wb.Navigate("https://www.youtube.com/cards_ajax?v=" + videoID, postData);
+                    JObject rawJson = JObject.Parse(res);
+
+                    string data = "";
+                    addMultipartParam("key", "", ref data);
+                    addMultipartParam("type", rawJson["type"].ToString(), ref data);
+                    addMultipartParam("start_ms", tbStartTime.Text, ref data);
+                    addMultipartParam("image_url", rawJson["url_metadata"]["thumbnails"][0]["url"].ToString(), ref data); // change this
+                    addMultipartParam("target_url", rawJson["url"].ToString(), ref data);
+                    addMultipartParam("title", tbTitle.Text, ref data);
+                    addMultipartParam("custom_message", tbCallToAction.Text, ref data);
+                    addMultipartParam("teaser_text", tbTeaserText.Text, ref data);
+                    addMultipartParam("action_create_associated", "1", ref data);
+                    addMultipartParam("session_token", sessionToken, ref data, true);
+                    wb.NavigateMultipart("https://www.youtube.com/cards_ajax?v=" + videoID, data);
+                    i++;
+                }
+            }
+            tipsOutProgress();
+            lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "tips added to " + i + " videos"));
+        }
+
+        private void addMultipartParam(string key, string value, ref string data, bool last = false)
+        {
+            string boundary = "-----------------------------17101148691947789575814176401" + Environment.NewLine;
+            string keyValuePattern = string.Format("Content-Disposition: form-data; name=\"{0}\""
+                + Environment.NewLine + Environment.NewLine + value + Environment.NewLine, key);
+            data += boundary + keyValuePattern;
+            if (last) data += "-----------------------------17101148691947789575814176401--" + Environment.NewLine;
+        }
+
+        private void btnCancelTipAction_Click(object sender, EventArgs e)
+        {
+            tipCancelAction = true;
+        }
+
+        private void btnRemoveTips_Click(object sender, EventArgs e)
+        {
+            Thread t = new Thread(removeTips);
+            t.Start();
+        }
+
+        private void removeTips()
+        {
+            tipsInProgress();
+            string linkPattern = "https://www.youtube.com/cards_ajax?v={0}&action_list=1";
+            tipCancelAction = false;
+            int i = 0;
+            foreach (DataGridViewRow item in dgvMain.Rows)
+            {
+                if (tipCancelAction)
+                {
+                    lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "canceled"));
+                    tipsOutProgress();
+                    return;
+                }
+                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                {
+                    lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = (i + 1) + " - tips removed, current video: " + item.Cells[2].Value));
+                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                    string videoUrl = item.Cells[1].Value.ToString();
+                    wb.Navigate(string.Format(linkPattern, videoID));
+                    JObject tipsJson = JObject.Parse(wb.DocumentText);
+                    wb.Navigate(string.Format("https://www.youtube.com/cards?v={0}&video_referrer=watch#", videoID));
+                    string sessionToken = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value;
+
+                    foreach (JObject tipJson in tipsJson["feature_templates"])
+                    {
+                        i++;
+                        string data = "";
+                        addMultipartParam("key", tipJson["key"].ToString(), ref data);
+                        addMultipartParam("type", tipJson["type"].ToString(), ref data);
+                        addMultipartParam("start_ms", tipJson["start_ms"].ToString(), ref data);
+                        addMultipartParam("image_url", tipJson["image_url"].ToString(), ref data); // change this
+                        addMultipartParam("target_url", tipJson["target_url"].ToString(), ref data);
+                        addMultipartParam("title", tipJson["title"].ToString(), ref data);
+                        addMultipartParam("teaser_text", tipJson["teaser_text"].ToString(), ref data);
+                        int ms = Convert.ToInt32(tipJson["start_ms"].ToString());
+                        TimeSpan ts = new TimeSpan(0, 0, 0, 0, ms);
+                        string start_time = ts.Hours.ToString("hh") + ":" + ts.Seconds.ToString("ss");
+                        addMultipartParam("start_time", start_time, ref data);
+                        addMultipartParam("session_token", sessionToken, ref data, true);
+                        wb.NavigateMultipart(string.Format("https://www.youtube.com/cards_ajax?v={0}&action_delete=1", videoID), data);
+                    }
+
+                }
+
+            }
+            tipsOutProgress();
+            lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = i + " tips was removed"));
+        }
+
+        private void tipsInProgress()
+        {
+            btnAddTips.Invoke(new Action(() => btnAddTips.Enabled = false));
+            btnRemoveTips.Invoke(new Action(() => btnRemoveTips.Enabled = false));
+            cbTipType.Invoke(new Action(() => cbTipType.Enabled = false));
+        }
+
+        private void tipsOutProgress()
+        {
+            btnAddTips.Invoke(new Action(() => btnAddTips.Enabled = true));
+            btnRemoveTips.Invoke(new Action(() => btnRemoveTips.Enabled = true));
+            cbTipType.Invoke(new Action(() => cbTipType.Enabled = true));
+        }
+
+        #endregion
     }
 }

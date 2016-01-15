@@ -72,6 +72,64 @@ namespace YouTubeAnnotations
             return DocumentText;
         }
 
+        public string NavigateJsonPost(string url, string postData)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+
+            var data = Encoding.UTF8.GetBytes(postData);
+
+            request.CookieContainer = cookie;
+            request.Method = "POST";
+            request.ContentType = "application/json; charset=utf-8";
+            request.ContentLength = data.Length;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                DocumentText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            //File.WriteAllBytes("1.html", Encoding.UTF8.GetBytes(respString.ToArray()));
+            return DocumentText;
+        }
+
+        public string NavigateMultipart(string url, string postData)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+
+            var data = Encoding.UTF8.GetBytes(postData);
+
+            request.CookieContainer = cookie;
+            request.Method = "POST";
+            request.ContentType = "multipart/form-data; " + "boundary=---------------------------17101148691947789575814176401";
+            request.ContentLength = data.Length;
+            
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                DocumentText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            //File.WriteAllBytes("1.html", Encoding.UTF8.GetBytes(respString.ToArray()));
+            return DocumentText;
+        }
+
         public string NavigateToFile(string url, string postData)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
