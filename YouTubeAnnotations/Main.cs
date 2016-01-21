@@ -1036,6 +1036,21 @@ namespace YouTubeAnnotations
                 MessageBox.Show("Please choose tip type");
                 return;
             }
+            if (tbTitle.Text == "" && cbTipType.SelectedIndex == 1)
+            {
+                MessageBox.Show("Please input title");
+                return;
+            }
+            if (tbTeaserText.Text == "" && cbTipType.SelectedIndex == 1)
+            {
+                MessageBox.Show("Please input teaser text");
+                return;
+            }
+            if (tbCallToAction.Text == "" && cbTipType.SelectedIndex == 1)
+            {
+                MessageBox.Show("Please input call to action");
+                return;
+            }
             Thread t;
             int index = cbTipType.SelectedIndex;
             if (index == 0) t = new Thread(createTipToVideo);
@@ -1100,46 +1115,55 @@ namespace YouTubeAnnotations
                 max = dgvMain.Rows.Cast<DataGridViewRow>().Where((r) => r.Cells[0].Value.ToString() == "True").Count();
             else
                 max = dgvMain.Rows.Count;
-            foreach (DataGridViewRow item in dgvMain.Rows)
+            string res = "";
+            try
             {
-                if (tipCancelAction)
+                foreach (DataGridViewRow item in dgvMain.Rows)
                 {
-                    lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "canceled"));
-                    tipsOutProgress();
-                    return;
-                }
-                if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
-                {
-                    if (lblTipsStatusBar.InvokeRequired)
-                        lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value));
-                    else
-                        lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
-                    string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
-                    string videoUrl = item.Cells[1].Value.ToString();
-                    wb.Navigate(string.Format("https://www.youtube.com/cards?v={0}&video_referrer=watch#", videoID));
-                    string sessionToken = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value;
+                    if (tipCancelAction)
+                    {
+                        lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "canceled"));
+                        tipsOutProgress();
+                        return;
+                    }
+                    if ((item.Cells[0] as DataGridViewCheckBoxCell).Value.ToString() == "True" || cbSelectAllVideos.Checked)
+                    {
+                        if (lblTipsStatusBar.InvokeRequired)
+                            lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value));
+                        else
+                            lblTipsStatusBar.Text = (i + 1) + "/" + max + " :" + item.Cells[2].Value;
+                        string videoID = item.Cells[1].Value.ToString().Replace("https://www.youtube.com/watch?v=", "");
+                        string videoUrl = item.Cells[1].Value.ToString();
+                        wb.Navigate(string.Format("https://www.youtube.com/cards?v={0}&video_referrer=watch#", videoID));
+                        string sessionToken = Regex.Match(wb.DocumentText, "'XSRF_TOKEN': \"(.*?)\"").Groups[1].Value;
 
-                    string postData = "target_url=" + tbUrl.Text;
-                    postData += "&action_get_url_info=1";
-                    postData += "&type=link";
-                    postData += "&session_token=" + sessionToken;
-                    string res = wb.Navigate("https://www.youtube.com/cards_ajax?v=" + videoID, postData);
-                    JObject rawJson = JObject.Parse(res);
+                        string postData = "target_url=" + tbUrl.Text;
+                        postData += "&action_get_url_info=1";
+                        postData += "&type=link";
+                        postData += "&session_token=" + sessionToken;
+                        res = wb.Navigate("https://www.youtube.com/cards_ajax?v=" + videoID, postData);
+                        JObject rawJson = JObject.Parse(res);
 
-                    string data = "";
-                    addMultipartParam("key", "", ref data);
-                    addMultipartParam("type", rawJson["type"].ToString(), ref data);
-                    addMultipartParam("start_ms", tbStartTime.Text, ref data);
-                    addMultipartParam("image_url", rawJson["url_metadata"]["thumbnails"][0]["url"].ToString(), ref data); // change this
-                    addMultipartParam("target_url", rawJson["url"].ToString(), ref data);
-                    addMultipartParam("title", tbTitle.Text, ref data);
-                    addMultipartParam("custom_message", tbCallToAction.Text, ref data);
-                    addMultipartParam("teaser_text", tbTeaserText.Text, ref data);
-                    addMultipartParam("action_create_associated", "1", ref data);
-                    addMultipartParam("session_token", sessionToken, ref data, true);
-                    wb.NavigateMultipart("https://www.youtube.com/cards_ajax?v=" + videoID, data);
-                    i++;
+                        string data = "";
+                        addMultipartParam("key", "", ref data);
+                        addMultipartParam("type", rawJson["type"].ToString(), ref data);
+                        addMultipartParam("start_ms", tbStartTime.Text, ref data);
+                        addMultipartParam("image_url", rawJson["url_metadata"]["thumbnails"][0]["url"].ToString(), ref data); // change this
+                        addMultipartParam("target_url", rawJson["url"].ToString(), ref data);
+                        addMultipartParam("title", tbTitle.Text, ref data);
+                        addMultipartParam("custom_message", tbCallToAction.Text, ref data);
+                        addMultipartParam("teaser_text", tbTeaserText.Text, ref data);
+                        addMultipartParam("action_create_associated", "1", ref data);
+                        addMultipartParam("session_token", sessionToken, ref data, true);
+                        wb.NavigateMultipart("https://www.youtube.com/cards_ajax?v=" + videoID, data);
+                        i++;
+                    }
                 }
+            }
+            catch(Exception)
+            {
+                JObject rawJson = JObject.Parse(res);
+                MessageBox.Show(rawJson["errors"].ToString(), "error");
             }
             tipsOutProgress();
             lblTipsStatusBar.Invoke(new Action(() => lblTipsStatusBar.Text = "tips added to " + i + " videos"));
@@ -1196,10 +1220,10 @@ namespace YouTubeAnnotations
                         addMultipartParam("key", tipJson["key"].ToString(), ref data);
                         addMultipartParam("type", tipJson["type"].ToString(), ref data);
                         addMultipartParam("start_ms", tipJson["start_ms"].ToString(), ref data);
-                        addMultipartParam("image_url", tipJson["image_url"].ToString(), ref data); // change this
+                        addMultipartParam("image_url", tipJson["image_url"] != null ? tipJson["image_url"].ToString() : "", ref data); // change this
                         addMultipartParam("target_url", tipJson["target_url"].ToString(), ref data);
                         addMultipartParam("title", tipJson["title"].ToString(), ref data);
-                        addMultipartParam("teaser_text", tipJson["teaser_text"].ToString(), ref data);
+                        addMultipartParam("teaser_text", tipJson["teaser_text"] != null ? tipJson["teaser_text"].ToString() : "", ref data);
                         int ms = Convert.ToInt32(tipJson["start_ms"].ToString());
                         TimeSpan ts = new TimeSpan(0, 0, 0, 0, ms);
                         string start_time = ts.Hours.ToString("hh") + ":" + ts.Seconds.ToString("ss");
