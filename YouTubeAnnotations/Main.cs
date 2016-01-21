@@ -54,14 +54,6 @@ namespace YouTubeAnnotations
             //wb.ScriptErrorsSuppressed = true;
             btnLogout_Click((object)wb, new EventArgs());
 
-
-
-
-
-            //tbLogin.Text = "bivolghenadie@gmail.com";
-            //tbPw.Text = "inguta81s";*/
-            //tbLogin.Text = "beuker93@gmail.com";
-            //tbPw.Text = "Cdzndeyl11";
             Thread t = new Thread(getFeed);
             t.Start();
         }
